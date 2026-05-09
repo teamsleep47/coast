@@ -17,6 +17,17 @@
   --am:#fbbf24;--amd:rgba(251,191,36,.12);
   --r:12px;--rs:8px;
 }
+[data-theme="light"]{
+  --bg:#f0f0f5;--sur:#ffffff;--sur2:#f5f5fa;--sur3:#eaeaf2;
+  --bdr:#d0d0e0;--bdrh:#b0b0cc;
+  --tx:#1a1a2e;--mu:#6060a0;--dim:#a0a0c0;
+  --ac:#6355e0;--glow:rgba(99,85,224,.12);--hi:#7c6aff;
+  --gr:#16a34a;--grd:rgba(22,163,74,.1);
+  --re:#dc2626;--red:rgba(220,38,38,.08);
+  --am:#d97706;--amd:rgba(217,119,6,.1);
+}
+[data-theme="light"] header{ background:rgba(240,240,245,.95); }
+[data-theme="light"] #lw{ background:var(--bg); }
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--tx);font-family:'DM Mono',monospace;font-size:14px;min-height:100vh;overflow-x:hidden}
 #lw{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:100}
@@ -179,6 +190,7 @@ select.fi{cursor:pointer}
           <span class="uemail" id="uemail"></span>
         </div>
       </div>
+      <button class="hbtn" id="thbtn" title="Toggle theme">◐</button>
       <button class="hbtn" id="rbtn">↻</button>
       <button class="hbtn" id="obtn">sign out</button>
     </div>
@@ -219,8 +231,8 @@ select.fi{cursor:pointer}
     <div class="card">
       <div class="ct">Daily Allowance</div>
       <div class="aw-tabs">
-        <button class="awt on" id="awt-std">Standard</button>
-        <button class="awt" id="awt-ro">With Rollover</button>
+        <button class="awt" id="awt-std">Standard</button>
+        <button class="awt on" id="awt-ro">With Rollover</button>
       </div>
       <div class="aw">
         <div style="font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px" id="aw-label">You can spend</div>
@@ -285,7 +297,8 @@ select.fi{cursor:pointer}
         </div>
         <button class="btn bp s2" id="badd">Add Transaction</button>
       </div>
-      <div class="tl" id="txnlist"><div class="emp" id="txnemp">No transactions yet.</div></div>
+      <div class="emp" id="txnemp">No transactions yet.</div>
+      <div class="tl" id="txnlist"></div>
     </div>
     <div class="card">
       <div class="ct">Monthly Log</div>
@@ -304,7 +317,7 @@ var LS_HINT   = 'coast_hint_v2';
 
 // ── State ─────────────────────────────────────────
 var token = null, fileId = null, saveTimer = null, refreshTimer = null;
-var txnType = 'expense', txnFilter = 'all', editId = null, allowMode = 'std';
+var txnType = 'expense', txnFilter = 'all', editId = null, allowMode = 'rollover';
 var tokenClient = null, appBooted = false;
 var S = { savings:0, floor:0, date:'', txns:[], subs:[], rollover_bank:0, last_allowance_date:'' };
 
@@ -824,6 +837,25 @@ document.addEventListener('click',function(e){
   }
 });
 document.querySelectorAll('.fb').forEach(function(b){ b.addEventListener('click',function(){ txnFilter=b.dataset.f; document.querySelectorAll('.fb').forEach(function(x){ x.classList.remove('on'); }); b.classList.add('on'); renderTxns(); }); });
+
+// ── Theme ──
+var THEMES = ['dark','light'];
+var themeIdx = 0;
+function applyTheme(t){
+  document.documentElement.setAttribute('data-theme', t==='light'?'light':'');
+  try{ localStorage.setItem('coast_theme', t); }catch(e){}
+  ge('thbtn').title = t==='light' ? 'Switch to dark' : 'Switch to light';
+  ge('thbtn').textContent = t==='light' ? '☀' : '◐';
+}
+function initTheme(){
+  try{ var saved=localStorage.getItem('coast_theme'); if(saved){ themeIdx=THEMES.indexOf(saved); if(themeIdx<0)themeIdx=0; applyTheme(THEMES[themeIdx]); return; } }catch(e){}
+  applyTheme('dark');
+}
+ge('thbtn').addEventListener('click',function(){
+  themeIdx=(themeIdx+1)%THEMES.length;
+  applyTheme(THEMES[themeIdx]);
+});
+initTheme();
 </script>
 
 <!-- Auth uses direct OAuth2 redirect — no external library needed -->
