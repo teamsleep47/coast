@@ -19,8 +19,6 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--tx);font-family:'DM Mono',monospace;font-size:14px;min-height:100vh;overflow-x:hidden}
-
-/* LOGIN */
 #lw{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:100}
 #lw::before{content:'';position:absolute;width:700px;height:700px;background:radial-gradient(circle,rgba(124,106,255,.07) 0%,transparent 65%);top:50%;left:50%;transform:translate(-50%,-55%);pointer-events:none}
 .lc{position:relative;background:var(--sur);border:1px solid var(--bdr);border-radius:20px;padding:44px 36px;width:min(400px,92vw);display:flex;flex-direction:column;gap:20px;text-align:center}
@@ -31,42 +29,33 @@ body{background:var(--bg);color:var(--tx);font-family:'DM Mono',monospace;font-s
 #sbtn{display:flex;align-items:center;justify-content:center;gap:11px;background:var(--sur2);border:1px solid var(--bdrh);border-radius:var(--rs);padding:14px 20px;color:var(--tx);font-family:'DM Mono',monospace;font-size:14px;cursor:pointer;transition:all .18s;width:100%}
 #sbtn:hover:not(:disabled){background:var(--sur3);border-color:var(--ac);box-shadow:0 0 18px var(--glow)}
 #sbtn:disabled{opacity:.45;cursor:default}
-.lnote{font-size:11px;color:var(--dim);margin-top:-4px}
-
-/* APP */
+.lnote{font-size:11px;color:var(--dim)}
 #app{display:none;min-height:100vh}
-header{position:sticky;top:0;z-index:50;background:rgba(10,10,15,.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--bdr);padding:0 18px;height:54px;display:flex;align-items:center;justify-content:space-between}
+header{position:sticky;top:0;z-index:50;background:rgba(10,10,15,.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--bdr);padding:0 18px;height:54px;display:flex;align-items:center;justify-content:space-between}
 .brand{font-family:'Syne',sans-serif;font-size:17px;font-weight:800}
 .brand b{color:var(--ac);font-weight:800}
 .hr{display:flex;align-items:center;gap:9px}
 .uchip{display:flex;align-items:center;gap:7px;background:var(--sur2);border:1px solid var(--bdr);border-radius:100px;padding:3px 11px 3px 3px;font-size:12px;color:var(--mu)}
 .av{width:26px;height:26px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;overflow:hidden;flex-shrink:0}
 .av img{width:100%;height:100%;object-fit:cover}
-#obtn{background:none;border:1px solid var(--bdr);border-radius:var(--rs);color:var(--mu);font-family:'DM Mono',monospace;font-size:11px;padding:4px 9px;cursor:pointer;transition:all .18s}
-#obtn:hover{border-color:var(--re);color:var(--re)}
-
-/* SAVE PILL */
+.hbtn{background:none;border:1px solid var(--bdr);border-radius:var(--rs);color:var(--mu);font-family:'DM Mono',monospace;font-size:11px;padding:4px 9px;cursor:pointer;transition:all .18s}
+.hbtn:hover{border-color:var(--ac);color:var(--ac)}
+#obtn:hover{border-color:var(--re)!important;color:var(--re)!important}
 #sp{position:fixed;bottom:18px;right:18px;z-index:300;background:var(--sur2);border:1px solid var(--bdr);border-radius:100px;padding:7px 13px;font-size:11px;color:var(--mu);display:flex;align-items:center;gap:5px;opacity:0;transform:translateY(6px);transition:all .25s;pointer-events:none}
 #sp.on{opacity:1;transform:none}
 #sp.sv{color:var(--am);border-color:var(--am)}
 #sp.ok{color:var(--gr);border-color:var(--gr)}
 #sp.er{color:var(--re);border-color:var(--re)}
 .dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
-
-/* LAYOUT */
 main{max-width:880px;margin:0 auto;padding:22px 14px 96px;display:flex;flex-direction:column;gap:18px}
 .card{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:18px}
 .ct{font-family:'Syne',sans-serif;font-size:10px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--mu);margin-bottom:14px}
-
-/* STAT GRID */
 .og{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
 .sb{background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--rs);padding:14px}
 .sl{font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.14em;margin-bottom:5px}
 .sv{font-family:'Syne',sans-serif;font-size:21px;font-weight:700}
 .sv.g{color:var(--gr)}.sv.r{color:var(--re)}.sv.a{color:var(--am)}.sv.p{color:var(--hi)}
 .ss{font-size:10px;color:var(--dim);margin-top:3px}
-
-/* RUNWAY BAR */
 .rbw{margin-top:14px}
 .rbl{display:flex;justify-content:space-between;font-size:11px;color:var(--mu);margin-bottom:5px}
 .rb{height:5px;background:var(--sur3);border-radius:99px;overflow:hidden}
@@ -74,18 +63,12 @@ main{max-width:880px;margin:0 auto;padding:22px 14px 96px;display:flex;flex-dire
 .rbf.w{background:linear-gradient(90deg,var(--am),#f59e0b)}
 .rbf.d{background:linear-gradient(90deg,var(--re),#ef4444)}
 .rbs{display:flex;justify-content:space-between;font-size:10px;color:var(--dim);margin-top:4px}
-
-/* ALERT */
 .al{border-radius:var(--rs);padding:11px 14px;font-size:12px;line-height:1.5;display:none;align-items:flex-start;gap:7px}
 .al.on{display:flex}
 .al.w{background:var(--amd);border:1px solid rgba(251,191,36,.28);color:var(--am)}
 .al.d{background:var(--red);border:1px solid rgba(248,113,113,.28);color:var(--re)}
-
-/* TWO COL */
 .two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 @media(max-width:580px){.two{grid-template-columns:1fr}}
-
-/* FORM */
 .fg{display:flex;flex-direction:column;gap:7px;margin-bottom:12px}
 .fl{font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.1em}
 .fi{background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--rs);padding:10px 11px;color:var(--tx);font-family:'DM Mono',monospace;font-size:14px;width:100%;-webkit-appearance:none;appearance:none;transition:border-color .15s}
@@ -93,21 +76,16 @@ main{max-width:880px;margin:0 auto;padding:22px 14px 96px;display:flex;flex-dire
 .fi::placeholder{color:var(--dim)}
 input[type=date]{color-scheme:dark}
 select.fi{cursor:pointer}
-
 .btn{border-radius:var(--rs);padding:10px 16px;font-family:'DM Mono',monospace;font-size:13px;cursor:pointer;border:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:all .18s;width:100%}
 .bp{background:var(--ac);color:#fff}
 .bp:hover{background:var(--hi);box-shadow:0 0 14px var(--glow)}
 .bg{background:var(--sur2);border:1px solid var(--bdr);color:var(--mu)}
 .bg:hover{border-color:var(--bdrh);color:var(--tx)}
-
-/* ALLOWANCE */
 .aw{background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--rs);padding:16px;margin-top:2px}
 .awamt{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;color:var(--hi)}
 .awrows{margin-top:9px;display:flex;flex-direction:column;gap:5px}
 .awr{display:flex;justify-content:space-between;font-size:12px;color:var(--mu)}
 .awr span:last-child{color:var(--tx)}
-
-/* TXN */
 .th{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:7px}
 .flt{display:flex;gap:5px;flex-wrap:wrap}
 .fb{background:none;border:1px solid var(--bdr);border-radius:99px;padding:4px 11px;font-family:'DM Mono',monospace;font-size:11px;color:var(--mu);cursor:pointer;transition:all .15s}
@@ -135,13 +113,14 @@ select.fi{cursor:pointer}
 .eia{width:78px;text-align:right}
 .emp{text-align:center;padding:28px;color:var(--dim);font-size:13px}
 .cc{display:inline-block;background:var(--sur3);border-radius:3px;padding:1px 5px;font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.04em;margin-left:3px}
+#serr{display:none;background:var(--red);border:1px solid rgba(248,113,113,.35);border-radius:var(--rs);padding:14px 16px;font-size:12px;color:var(--re);line-height:1.7;word-break:break-word}
 ::-webkit-scrollbar{width:3px}
 ::-webkit-scrollbar-thumb{background:var(--bdrh);border-radius:3px}
 </style>
 </head>
 <body>
 
-<!-- LOGIN WALL -->
+<!-- LOGIN -->
 <div id="lw">
   <div class="lc">
     <div><div class="lmark">Personal Finance</div><div class="ltitle">Coast.</div></div>
@@ -151,7 +130,7 @@ select.fi{cursor:pointer}
       <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.706A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.706V4.962H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.038l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.962L3.964 7.294C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
       <span id="slbl">Loading…</span>
     </button>
-    <p class="lnote">Data saved privately via Google Drive appDataFolder — only this app can read it.</p>
+    <p class="lnote">Saved privately via Google Drive appDataFolder.</p>
   </div>
 </div>
 
@@ -161,15 +140,13 @@ select.fi{cursor:pointer}
     <div class="brand">coast<b>.</b></div>
     <div class="hr">
       <div class="uchip"><div class="av" id="av"></div><span id="un">—</span></div>
-      <button id="rbtn" style="background:none;border:1px solid var(--bdr);border-radius:var(--rs);color:var(--mu);font-family:'DM Mono',monospace;font-size:11px;padding:4px 9px;cursor:pointer;transition:all .18s" onmouseover="this.style.borderColor='var(--ac)';this.style.color='var(--ac)'" onmouseout="this.style.borderColor='var(--bdr)';this.style.color='var(--mu)'">↻ sync</button>
-      <button id="obtn">sign out</button>
+      <button class="hbtn" id="rbtn">↻ sync</button>
+      <button class="hbtn" id="obtn">sign out</button>
     </div>
   </header>
   <main>
-    <div id="sync-err" style="display:none;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.35);border-radius:12px;padding:14px 16px;font-size:12px;color:#f87171;line-height:1.7;word-break:break-word"></div>
+    <div id="serr"></div>
     <div class="al" id="alrt"></div>
-
-    <!-- OVERVIEW -->
     <div class="card">
       <div class="ct">Overview</div>
       <div class="og">
@@ -186,14 +163,12 @@ select.fi{cursor:pointer}
         </div>
       </div>
     </div>
-
-    <!-- SETTINGS -->
     <div class="two">
       <div class="card">
         <div class="ct">Savings Balance</div>
         <div class="fg"><div class="fl">Current Total Savings ($)</div><input class="fi" type="number" id="isav" placeholder="0.00" step="0.01"></div>
         <button class="btn bp" id="bsav">Update Balance</button>
-        <p style="margin-top:10px;font-size:11px;color:var(--dim);line-height:1.6">Tip: adding transactions will auto-adjust this.</p>
+        <p style="margin-top:10px;font-size:11px;color:var(--dim);line-height:1.6">Adding transactions auto-adjusts this.</p>
       </div>
       <div class="card">
         <div class="ct">Coast Settings</div>
@@ -202,8 +177,6 @@ select.fi{cursor:pointer}
         <button class="btn bg" id="bgoal">Save Settings</button>
       </div>
     </div>
-
-    <!-- ALLOWANCE -->
     <div class="card">
       <div class="ct">Daily Allowance</div>
       <p style="font-size:12px;color:var(--mu);margin-bottom:12px;line-height:1.65">Max daily spend to stay above your floor by your coast date.</p>
@@ -214,8 +187,6 @@ select.fi{cursor:pointer}
         <div class="awrows" id="awrows"></div>
       </div>
     </div>
-
-    <!-- TRANSACTIONS -->
     <div class="card">
       <div class="th">
         <div class="ct" style="margin:0">Transactions</div>
@@ -249,204 +220,166 @@ select.fi{cursor:pointer}
 
 <div id="sp"><div class="dot"></div><span id="stxt">—</span></div>
 
+<!-- ALL JS before GIS loads — so onGisLoaded exists when GIS calls it -->
 <script>
-// ═══════════════════════════════════════
-// ALL FUNCTIONS DEFINED FIRST
-// so onGisLoaded() exists when the GIS
-// script tag fires its onload callback
-// ═══════════════════════════════════════
-
 var CLIENT_ID = '610369107204-efsi05f3geu6joojl6tds91ul1r3vdsh.apps.googleusercontent.com';
-var SCOPE     = 'https://www.googleapis.com/auth/drive.appdata';
-var FNAME     = 'budget_caosting.json';
+var SCOPE = 'https://www.googleapis.com/auth/drive.appdata';
+var FNAME = 'budget_caosting.json';
 
 var token = null, fileId = null, saveTimer = null;
 var txnType = 'expense', txnFilter = 'all', editId = null;
 var tokenClient = null;
 var S = { savings:0, floor:0, date:'', txns:[] };
 
-// ── GIS callbacks (must be global) ──────────────
-function onGisLoaded() {
+// ── Helpers ──────────────────────────────────────
+function ge(id){ return document.getElementById(id); }
+function money(n){ return '$'+Math.abs(Number(n)||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function today(){ return new Date().toISOString().slice(0,10); }
+
+function pill(cls,txt){ ge('sp').className='on '+cls; ge('stxt').textContent=txt; }
+function pillOff(){ setTimeout(function(){ ge('sp').className=''; }, 1800); }
+
+function showLoginErr(msg){ var e=ge('lerr'); e.textContent=msg; e.style.display='block'; }
+function showSyncErr(msg){
+  var e=ge('serr');
+  e.innerHTML='⚠ <strong>Sync error:</strong> '+esc(msg)
+    +'<br><small style="opacity:.7">Check F12 console. If it says 403, enable the Google Drive API at '
+    +'console.cloud.google.com → APIs &amp; Services → Library → "Google Drive API" → Enable.</small>';
+  e.style.display='block';
+}
+function hideSyncErr(){ var e=ge('serr'); if(e) e.style.display='none'; }
+
+// ── GIS callbacks ────────────────────────────────
+// These MUST be defined before the GIS <script> tag fires onload
+function onGisLoaded(){
   try {
-    tokenClient = window.google.accounts.oauth2.initTokenClient({
+    tokenClient = google.accounts.oauth2.initTokenClient({
       client_id: CLIENT_ID,
       scope: SCOPE,
       callback: onToken,
-      error_callback: function(e){ showErr('Auth error: '+(e.message||JSON.stringify(e))); }
+      error_callback: function(e){ showLoginErr('Auth error: '+(e.message||JSON.stringify(e))); }
     });
-    var btn = document.getElementById('sbtn');
-    btn.disabled = false;
-    document.getElementById('slbl').textContent = 'Continue with Google';
-  } catch(e) {
-    showErr('Google auth init failed: '+e.message+'. Are you on http:// or https://?');
+    ge('sbtn').disabled = false;
+    ge('slbl').textContent = 'Continue with Google';
+  } catch(e){
+    showLoginErr('Google auth failed to init: '+e.message+'. Must be served over https://');
   }
 }
-
-function onGisError() {
-  showErr('Could not load Google Sign-In library. You must serve this file over http:// or https:// — not as a local file://');
+function onGisError(){
+  showLoginErr('Could not load Google Sign-In. File must be served over https:// not file://');
 }
-
-function onToken(resp) {
-  if (resp.error) {
-    if (resp.error !== 'access_denied') showErr('Sign-in error: '+(resp.error_description||resp.error));
+function onToken(resp){
+  if (resp.error){
+    if (resp.error !== 'access_denied') showLoginErr('Sign-in error: '+(resp.error_description||resp.error));
     return;
   }
   token = resp.access_token;
   bootApp();
 }
 
-// ── UI helpers ──────────────────────────────────
-function ge(id){ return document.getElementById(id); }
-function showErr(msg){ var e=ge('lerr'); e.textContent=msg; e.style.display='block'; }
-function hideErr(){ ge('lerr').style.display='none'; }
-
-function pill(cls, txt){ var p=ge('sp'); p.className='on '+cls; ge('stxt').textContent=txt; }
-function pillHide(){ ge('sp').className=''; }
-
-// ── Money ────────────────────────────────────────
-function money(n){ return '$'+Math.abs(Number(n)||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
-function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function now(){ return new Date().toISOString().slice(0,10); }
-
-// ── Sync error banner ───────────────────────────
-function showSyncError(msg) {
-  var el = ge('sync-err');
-  if (!el) return;
-  el.textContent = '⚠ ' + msg + ' — check browser console (F12) for details. Make sure Google Drive API is enabled at console.cloud.google.com → APIs & Services → Library → search "Drive API" → Enable.';
-  el.style.display = 'block';
-}
-function hideSyncError() {
-  var el = ge('sync-err'); if (el) el.style.display = 'none';
-}
-
 // ── Boot ─────────────────────────────────────────
-async function bootApp() {
-  // Fetch user profile
-  try {
-    var r = await apiFetch('https://www.googleapis.com/oauth2/v3/userinfo');
-    var u = await r.json();
-    ge('un').textContent = u.given_name || u.email || '—';
-    var av = ge('av');
-    if (u.picture) { av.innerHTML = '<img src="'+u.picture+'" alt="">'; }
-    else { av.textContent = ((u.given_name||'?')[0]+(u.family_name||'')[0]||'').toUpperCase(); }
-  } catch(e) { console.warn('userinfo failed', e); }
-
+function bootApp(){
   ge('lw').style.display = 'none';
   ge('app').style.display = 'block';
-  await loadDrive();
-  renderAll();
+  // Fetch user info
+  fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+    headers:{ Authorization:'Bearer '+token }
+  }).then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(u){
+      if (!u) return;
+      ge('un').textContent = u.given_name || u.email || '—';
+      var av = ge('av');
+      if (u.picture) av.innerHTML = '<img src="'+u.picture+'" alt="">';
+      else av.textContent = ((u.given_name||'?')[0]+(u.family_name||'')[0]).toUpperCase();
+    }).catch(function(){});
+  // Load then render
+  loadDrive().then(function(){ renderAll(); });
 }
 
-// ── Sign out ─────────────────────────────────────
-ge('rbtn').addEventListener('click', function(){
-  hideSyncError();
-  loadDrive().then(renderAll);
-});
-ge('obtn').addEventListener('click', function(){
-  if (token) window.google.accounts.oauth2.revoke(token, function(){});
-  token = null; fileId = null;
-  S = { savings:0, floor:0, date:'', txns:[] };
-  ge('lw').style.display = 'flex';
-  ge('app').style.display = 'none';
-  hideErr();
-});
+// ── Drive ─────────────────────────────────────────
+function dh(extra){ return Object.assign({ Authorization:'Bearer '+token }, extra||{}); }
 
-// ── Sign in button ───────────────────────────────
-ge('sbtn').addEventListener('click', function(){
-  if (!tokenClient) { showErr('Not ready — please wait a moment and try again.'); return; }
-  hideErr();
-  tokenClient.requestAccessToken({ prompt: 'select_account' });
-});
-
-// ── Drive API ────────────────────────────────────
-function apiFetch(url, opts) {
-  opts = opts || {};
-  opts.headers = Object.assign({}, opts.headers||{}, { Authorization: 'Bearer '+token });
-  return fetch(url, opts);
+function findFile(){
+  return fetch(
+    'https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name+%3D+%27'+encodeURIComponent(FNAME)+'%27&fields=files(id)',
+    { headers: dh() }
+  ).then(function(r){
+    if (!r.ok) return r.text().then(function(t){ throw new Error('list '+r.status+': '+t); });
+    return r.json();
+  }).then(function(d){
+    return (d.files && d.files[0]) ? d.files[0].id : null;
+  });
 }
 
-async function findFile() {
-  var url = 'https://www.googleapis.com/drive/v3/files'
-    + '?spaces=appDataFolder'
-    + '&q=name+%3D+%27'+encodeURIComponent(FNAME)+'%27'
-    + '&fields=files(id)';
-  var r = await apiFetch(url);
-  if (!r.ok) { var t = await r.text(); throw new Error('list '+r.status+': '+t); }
-  var d = await r.json();
-  return (d.files && d.files[0]) ? d.files[0].id : null;
-}
-
-async function loadDrive() {
-  pill('sv', 'Loading from Drive…');
-  try {
-    fileId = await findFile();
-    if (fileId) {
-      var r = await apiFetch('https://www.googleapis.com/drive/v3/files/'+fileId+'?alt=media');
-      if (!r.ok) { var t = await r.text(); throw new Error('read '+r.status+': '+t); }
-      var loaded = await r.json();
-      S.savings = loaded.savings || 0;
-      S.floor   = loaded.floor   || 0;
-      S.date    = loaded.date    || '';
-      S.txns    = Array.isArray(loaded.txns) ? loaded.txns : [];
-      pill('ok', 'Loaded ✓');
-      setTimeout(pillHide, 1600);
-    } else {
-      pill('ok', 'No data yet — starting fresh');
-      setTimeout(pillHide, 2000);
+function loadDrive(){
+  pill('sv','Loading…');
+  return findFile().then(function(id){
+    fileId = id;
+    if (!fileId){
+      pill('ok','Ready'); pillOff();
+      return;
     }
-  } catch(e) {
+    return fetch('https://www.googleapis.com/drive/v3/files/'+fileId+'?alt=media', { headers:dh() })
+      .then(function(r){
+        if (!r.ok) return r.text().then(function(t){ throw new Error('read '+r.status+': '+t); });
+        return r.json();
+      }).then(function(d){
+        S.savings = d.savings || 0;
+        S.floor   = d.floor   || 0;
+        S.date    = d.date    || '';
+        S.txns    = Array.isArray(d.txns) ? d.txns : [];
+        hideSyncErr();
+        pill('ok','Synced ✓'); pillOff();
+      });
+  }).catch(function(e){
     console.error('loadDrive:', e);
-    // Show the full error visibly so you can diagnose it
-    var msg = e.message || String(e);
-    pill('er', 'Sync error: '+msg.slice(0,80));
-    // Also show in app as a persistent banner
-    showSyncError('Drive load failed: '+msg);
-  }
+    pill('er','Sync error'); ge('sp').className='on er';
+    showSyncErr(e.message);
+  });
 }
 
-async function saveDrive() {
-  if (!token) return; // not signed in
-  pill('sv', 'Saving…');
+function saveDrive(){
+  if (!token) return;
+  pill('sv','Saving…');
   var body = JSON.stringify(S);
-  try {
-    if (!fileId) {
-      // CREATE — multipart upload
-      var b = 'coastbnd'+Date.now();
-      var meta = JSON.stringify({ name: FNAME, parents: ['appDataFolder'] });
-      var mp = '--'+b+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'
-             + meta+'\r\n'
-             + '--'+b+'\r\nContent-Type: application/json\r\n\r\n'
-             + body+'\r\n'
-             + '--'+b+'--';
-      var rc = await apiFetch(
-        'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',
-        { method:'POST', headers:{'Content-Type':'multipart/related; boundary='+b}, body:mp }
-      );
-      if (!rc.ok) { var tc = await rc.text(); throw new Error('create '+rc.status+': '+tc); }
-      var dc = await rc.json();
-      fileId = dc.id;
-    } else {
-      // UPDATE — simple media patch
-      var ru = await apiFetch(
-        'https://www.googleapis.com/upload/drive/v3/files/'+fileId+'?uploadType=media',
-        { method:'PATCH', headers:{'Content-Type':'application/json'}, body:body }
-      );
-      if (!ru.ok) { var tu = await ru.text(); throw new Error('update '+ru.status+': '+tu); }
-    }
-    pill('ok', 'Saved ✓');
-    hideSyncError();
-    setTimeout(pillHide, 1600);
-  } catch(e) {
-    console.error('saveDrive:', e);
-    var msg = e.message || String(e);
-    pill('er', 'Save failed: '+msg.slice(0,80));
-    showSyncError('Drive save failed: '+msg);
+  var p;
+  if (!fileId){
+    var b = 'cb'+Date.now();
+    var meta = JSON.stringify({ name:FNAME, parents:['appDataFolder'] });
+    var mp = '--'+b+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'
+           + meta+'\r\n--'+b+'\r\nContent-Type: application/json\r\n\r\n'
+           + body+'\r\n--'+b+'--';
+    p = fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id', {
+      method:'POST',
+      headers: dh({'Content-Type':'multipart/related; boundary='+b}),
+      body: mp
+    }).then(function(r){
+      if (!r.ok) return r.text().then(function(t){ throw new Error('create '+r.status+': '+t); });
+      return r.json().then(function(d){ fileId = d.id; });
+    });
+  } else {
+    p = fetch('https://www.googleapis.com/upload/drive/v3/files/'+fileId+'?uploadType=media', {
+      method:'PATCH',
+      headers: dh({'Content-Type':'application/json'}),
+      body: body
+    }).then(function(r){
+      if (!r.ok) return r.text().then(function(t){ throw new Error('update '+r.status+': '+t); });
+    });
   }
+  p.then(function(){
+    hideSyncErr();
+    pill('ok','Saved ✓'); pillOff();
+  }).catch(function(e){
+    console.error('saveDrive:', e);
+    pill('er','Save failed'); ge('sp').className='on er';
+    showSyncErr(e.message);
+  });
 }
 
-function qsave(){ clearTimeout(saveTimer); saveTimer = setTimeout(saveDrive, 700); }
+function qsave(){ clearTimeout(saveTimer); saveTimer = setTimeout(saveDrive, 800); }
 
-// ── Render ───────────────────────────────────────
+// ── Render ────────────────────────────────────────
 function renderAll(){ renderInputs(); renderOverview(); renderAllowance(); renderTxns(); }
 
 function renderInputs(){
@@ -456,44 +389,34 @@ function renderInputs(){
 }
 
 function renderOverview(){
-  var sav   = Number(S.savings)||0;
-  var floor = Number(S.floor)  ||0;
-  var ago30 = Date.now()-30*864e5;
-  var spent = S.txns
-    .filter(function(t){ return t.type==='expense' && new Date(t.date+'T12:00')>=ago30; })
-    .reduce(function(a,t){ return a+Number(t.amt); }, 0);
-  var burn = spent/30;
-
-  ge('ss').textContent   = money(sav);
-  ge('sp30').textContent = money(spent);
-  ge('sdb').textContent  = money(burn);
-
-  var avail = sav-floor;
-  if (burn>0.01 && avail>0) {
-    var d = Math.floor(avail/burn);
-    var dd = new Date(Date.now()+d*864e5);
-    ge('srw').textContent  = d+'d';
-    ge('srws').textContent = dd.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-  } else if (avail<=0 && floor>0) {
+  var sav=Number(S.savings)||0, floor=Number(S.floor)||0;
+  var ago30=Date.now()-30*864e5;
+  var spent=S.txns.filter(function(t){ return t.type==='expense' && new Date(t.date+'T12:00')>=ago30; })
+                  .reduce(function(a,t){ return a+Number(t.amt); },0);
+  var burn=spent/30;
+  ge('ss').textContent=money(sav);
+  ge('sp30').textContent=money(spent);
+  ge('sdb').textContent=money(burn);
+  var avail=sav-floor;
+  if (burn>0.01 && avail>0){
+    var d=Math.floor(avail/burn);
+    ge('srw').textContent=d+'d';
+    ge('srws').textContent=new Date(Date.now()+d*864e5).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  } else if (avail<=0 && floor>0){
     ge('srw').textContent='!'; ge('srws').textContent='below floor';
   } else {
     ge('srw').textContent='∞'; ge('srws').textContent='no spend data yet';
   }
-
   var al=ge('alrt');
-  if (floor>0 && sav<floor) {
-    al.className='al on d'; al.textContent='⚠ '+money(floor-sav)+' below your floor. Time to review.';
-  } else if (floor>0 && sav<floor*1.1) {
-    al.className='al on w'; al.textContent='⚡ Approaching floor of '+money(floor)+' — only '+money(sav-floor)+' buffer left.';
-  } else { al.className='al'; }
-
+  if (floor>0 && sav<floor){ al.className='al on d'; al.textContent='⚠ '+money(floor-sav)+' below floor — review spending.'; }
+  else if (floor>0 && sav<floor*1.1){ al.className='al on w'; al.textContent='⚡ Nearing floor of '+money(floor)+' — '+money(sav-floor)+' buffer left.'; }
+  else { al.className='al'; }
   var rs=ge('rbsec');
-  if (floor>0 && sav>0) {
+  if (floor>0 && sav>0){
     rs.style.display='block';
     var pct=Math.min(100,Math.max(0,(avail/sav)*100));
-    var f=ge('rbf');
-    f.style.width=pct+'%';
-    f.className='rbf'+(pct<20?' d':pct<40?' w':'');
+    ge('rbf').style.width=pct+'%';
+    ge('rbf').className='rbf'+(pct<20?' d':pct<40?' w':'');
     ge('rbpct').textContent=pct.toFixed(0)+'% above floor';
     ge('rbfl').textContent='floor: '+money(floor);
     ge('rbb').textContent='balance: '+money(sav);
@@ -504,9 +427,9 @@ function renderAllowance(){
   var sav=Number(S.savings)||0, floor=Number(S.floor)||0;
   var sp=sav-floor, dt=S.date;
   function arow(l,v){ return '<div class="awr"><span>'+l+'</span><span>'+v+'</span></div>'; }
-  if (dt && sp>0) {
+  if (dt && sp>0){
     var days=Math.round((new Date(dt+'T12:00')-new Date())/864e5);
-    if (days>0) {
+    if (days>0){
       var pd=sp/days;
       ge('awday').textContent=money(pd);
       ge('awrows').innerHTML=arow('Spendable above floor',money(sp))+arow('Days remaining',days)+arow('Per week',money(pd*7))+arow('Per month',money(pd*30));
@@ -516,9 +439,9 @@ function renderAllowance(){
     ge('awrows').innerHTML='<div style="color:var(--am);font-size:12px;margin-top:8px">Coast date passed — update settings.</div>';
     return;
   }
-  if (sp>0) {
+  if (sp>0){
     ge('awday').textContent=money(sp/365);
-    ge('awrows').innerHTML='<div style="color:var(--mu);font-size:12px;margin-top:8px">Estimated on 1-year horizon — set a coast date for precision.</div>'+arow('Spendable above floor',money(sp));
+    ge('awrows').innerHTML='<div style="color:var(--mu);font-size:12px;margin-top:8px">Set a coast date for a precise allowance.</div>'+arow('Spendable above floor',money(sp));
   } else {
     ge('awday').textContent='—';
     ge('awrows').innerHTML='<div style="color:var(--dim);font-size:12px;margin-top:8px">Enter savings and floor to calculate.</div>';
@@ -543,16 +466,9 @@ function renderTxns(){
   }).join('');
 }
 
-// ── Actions ──────────────────────────────────────
-function saveSavings(){
-  var v=parseFloat(ge('isav').value); if(isNaN(v)) return;
-  S.savings=v; renderAll(); qsave();
-}
-function saveGoals(){
-  S.floor=parseFloat(ge('iflr').value)||0;
-  S.date=ge('idat').value||'';
-  renderAll(); qsave();
-}
+// ── Actions ───────────────────────────────────────
+function saveSavings(){ var v=parseFloat(ge('isav').value); if(isNaN(v)) return; S.savings=v; renderAll(); qsave(); }
+function saveGoals(){ S.floor=parseFloat(ge('iflr').value)||0; S.date=ge('idat').value||''; renderAll(); qsave(); }
 function setType(t){
   txnType=t;
   ge('tbex').className='tb ex'+(t==='expense'?' on':'');
@@ -563,7 +479,7 @@ function setType(t){
 function addTxn(){
   var d=ge('tdsc').value.trim(), a=parseFloat(ge('tamt').value), c=ge('tcat').value;
   if(!d||isNaN(a)||a<=0){ ge('tdsc').focus(); return; }
-  S.txns.push({ id:Date.now().toString(), desc:d, amt:a, cat:c, type:txnType, date:now() });
+  S.txns.push({ id:Date.now().toString(), desc:d, amt:a, cat:c, type:txnType, date:today() });
   S.savings=(Number(S.savings)||0)+(txnType==='income'?a:-a);
   ge('tdsc').value=''; ge('tamt').value='';
   renderAll(); qsave();
@@ -580,14 +496,14 @@ function startEdit(id,e){
   var t=S.txns.find(function(x){ return x.id===id; }); if(!t) return;
   var row=document.querySelector('.txn[data-id="'+id+'"]');
   row.classList.add('ed');
-  row.querySelector('.tds').innerHTML='<input class="ei" id="eid-'+id+'" value="'+esc(t.desc)+'" onblur="commitEdit(\''+id+'\')" onkeydown="ekd(event,\''+id+'\')">';
-  row.querySelector('.tam').innerHTML='<input class="ei eia" id="eia-'+id+'" value="'+t.amt+'" onblur="commitEdit(\''+id+'\')" onkeydown="ekd(event,\''+id+'\')">';
-  var el=ge('eid-'+id); if(el) el.focus();
+  row.querySelector('.tds').innerHTML='<input class="ei" id="eid'+id+'" value="'+esc(t.desc)+'" onblur="commitEdit(\''+id+'\')" onkeydown="ekd(event,\''+id+'\')">';
+  row.querySelector('.tam').innerHTML='<input class="ei eia" id="eia'+id+'" value="'+t.amt+'" onblur="commitEdit(\''+id+'\')" onkeydown="ekd(event,\''+id+'\')">';
+  var el=ge('eid'+id); if(el) el.focus();
 }
 function commitEdit(id){
   if(editId!==id) return; editId=null;
   var t=S.txns.find(function(x){ return x.id===id; }); if(!t) return;
-  var de=ge('eid-'+id), ae=ge('eia-'+id);
+  var de=ge('eid'+id), ae=ge('eia'+id);
   if(de&&de.value.trim()) t.desc=de.value.trim();
   if(ae){ var v=parseFloat(ae.value); if(!isNaN(v)&&v>0) t.amt=v; }
   renderAll(); qsave();
@@ -597,8 +513,22 @@ function ekd(e,id){
   if(e.key==='Escape'){ editId=null; renderTxns(); }
 }
 
-// ── Event wiring ─────────────────────────────────
-document.addEventListener('click', function(e){ if(editId&&!e.target.closest('.txn')) commitEdit(editId); });
+// ── Wire up events (DOM is ready since this script is at bottom of body) ──
+ge('sbtn').addEventListener('click', function(){
+  if(!tokenClient){ showLoginErr('Not ready — please wait.'); return; }
+  ge('lerr').style.display='none';
+  tokenClient.requestAccessToken({ prompt:'select_account' });
+});
+ge('obtn').addEventListener('click', function(){
+  if(token) google.accounts.oauth2.revoke(token, function(){});
+  token=null; fileId=null; S={savings:0,floor:0,date:'',txns:[]};
+  ge('lw').style.display='flex'; ge('app').style.display='none';
+  ge('lerr').style.display='none';
+});
+ge('rbtn').addEventListener('click', function(){
+  hideSyncErr();
+  loadDrive().then(function(){ renderAll(); });
+});
 ge('bsav').addEventListener('click', saveSavings);
 ge('bgoal').addEventListener('click', saveGoals);
 ge('badd').addEventListener('click', addTxn);
@@ -611,6 +541,7 @@ ge('iflr').addEventListener('blur', saveGoals);
 ge('idat').addEventListener('change', saveGoals);
 ge('tdsc').addEventListener('keydown', function(e){ if(e.key==='Enter') addTxn(); });
 ge('tamt').addEventListener('keydown', function(e){ if(e.key==='Enter') addTxn(); });
+document.addEventListener('click', function(e){ if(editId&&!e.target.closest('.txn')) commitEdit(editId); });
 document.querySelectorAll('.fb').forEach(function(b){
   b.addEventListener('click', function(){
     txnFilter=b.dataset.f;
@@ -621,8 +552,7 @@ document.querySelectorAll('.fb').forEach(function(b){
 });
 </script>
 
-<!-- GIS loads AFTER all JS is defined above, so onGisLoaded() is guaranteed to exist -->
+<!-- GIS loads LAST — onGisLoaded() is already defined above -->
 <script src="https://accounts.google.com/gsi/client" onload="onGisLoaded()" onerror="onGisError()"></script>
-
 </body>
 </html>
