@@ -237,18 +237,47 @@ let S = { savings:0, floor:0, date:'', txns:[] };
 let tokenClient = null;
 
 // ── GIS lifecycle ──
+function isMobile() {
+  return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || window.innerWidth < 768;
+}
+
 function onGisLoaded() {
   try {
-    tokenClient = google.accounts.oauth2.initTokenClient({
+    var cfg = {
       client_id: CLIENT_ID,
       scope: SCOPE,
       callback: handleToken,
       error_callback: function(err) { showErr('Sign-in failed: ' + (err.message || JSON.stringify(err))); }
-    });
+    };
+    // On mobile, redirect mode is far more reliable than popup
+    if (isMobile()) {
+      cfg.ux_mode = 'redirect';
+      cfg.redirect_uri = window.location.href.split('?')[0].split('#')[0];
+    }
+    tokenClient = google.accounts.oauth2.initTokenClient(cfg);
     document.getElementById('signin-btn').disabled = false;
     document.getElementById('signin-label').textContent = 'Continue with Google';
   } catch(e) {
     showErr('Failed to init Google auth: ' + e.message);
+  }
+}
+
+// Handle redirect flow — token comes back as hash fragment
+function checkRedirectToken() {
+  var hash = window.location.hash;
+  if (!hash) return;
+  var params = {};
+  hash.replace(/^#/, '').split('&').forEach(function(p) {
+    var kv = p.split('=');
+    params[decodeURIComponent(kv[0])] = decodeURIComponent(kv[1] || '');
+  });
+  if (params.access_token) {
+    // Clean hash from URL so refresh doesn't re-trigger
+    history.replaceState(null, '', window.location.pathname + window.location.search);
+    token = params.access_token;
+    bootApp();
+  } else if (params.error) {
+    showErr('Sign-in error: ' + params.error);
   }
 }
 function onGisError() {
@@ -271,7 +300,7 @@ function showErr(msg) {
 document.getElementById('signin-btn').addEventListener('click', function() {
   if (!tokenClient) { showErr('Auth not ready — please refresh the page.'); return; }
   document.getElementById('error-msg').style.display = 'none';
-  tokenClient.requestAccessToken({ prompt: '' });
+  tokenClient.requestAccessToken({ prompt: 'select_account' });
 });
 
 // ── Boot / sign-out ──
@@ -533,6 +562,9 @@ function ekd(e,id) {
 }
 
 // ── Event wiring (all after DOM is ready) ──
+// Check for redirect-mode token on page load (mobile OAuth flow)
+checkRedirectToken();
+
 document.addEventListener('click', function(e) {
   if(editingId && !e.target.closest('.txn')) commitEdit(editingId);
 });
