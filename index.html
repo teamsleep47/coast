@@ -331,22 +331,22 @@ function loadHint(){ try{ return localStorage.getItem(LS_HINT)||''; }catch(e){ r
 function clearSession(){ try{ localStorage.removeItem(LS_PROFILE); localStorage.removeItem(LS_HINT); }catch(e){} }
 
 function applyProfile(p){
-  if (!p) return;
-  ge('un').textContent     = p.name  || '—';
-  ge('uemail').textContent = p.email || '';
-  var av = ge('av');
+  if (!p) { console.warn('[coast] applyProfile called with null'); return; }
+  console.log('[coast] applyProfile:', p.name, p.email, !!p.picture);
+  var unEl = ge('un'), emEl = ge('uemail'), av = ge('av');
+  if (!unEl || !emEl || !av) { console.error('[coast] profile elements not in DOM yet'); return; }
+  unEl.textContent = p.name  || '—';
+  emEl.textContent = p.email || '';
+  av.innerHTML = '';
   if (p.picture){
     var ini = initials(p.name||'?');
     var img = document.createElement('img');
-    img.src = p.picture;
-    img.alt = p.name || '';
-    img.setAttribute('referrerpolicy','no-referrer');
-    img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%';
+    img.referrerPolicy = 'no-referrer';
+    img.style.cssText  = 'width:100%;height:100%;object-fit:cover;border-radius:50%;display:block';
     img.onerror = function(){ av.innerHTML=''; av.textContent=ini; };
-    av.innerHTML = '';
+    img.src = p.picture; // set src last so onerror is already attached
     av.appendChild(img);
   } else {
-    av.innerHTML = '';
     av.textContent = initials(p.name||'?');
   }
 }
@@ -399,49 +399,65 @@ function onGisError(){ showLoginErr('Google Sign-In failed to load — must use 
 // Parse token from URL hash after Google redirect
 function checkHashToken(){
   var hash = window.location.hash;
-  if (!hash) return false;
+  if (!hash || hash.length < 2) return false;
   var params = {};
-  hash.replace(/^#/,'').split('&').forEach(function(p){
-    var kv = p.split('=');
-    params[decodeURIComponent(kv[0])] = decodeURIComponent(kv[1]||'');
+  hash.slice(1).split('&').forEach(function(pair){
+    var eq = pair.indexOf('=');
+    if (eq < 0) return;
+    var k = pair.slice(0, eq);
+    var v = pair.slice(eq + 1);
+    // Use replace for + before decoding (access tokens can contain +)
+    try { params[decodeURIComponent(k)] = decodeURIComponent(v.replace(/\+/g,' ')); } catch(e){ params[k]=v; }
   });
+  console.log('[coast] hash params keys:', Object.keys(params));
   if (!params.access_token) return false;
-  // Clean hash from URL immediately so refresh doesn't re-trigger
-  try { history.replaceState(null,'',window.location.pathname+window.location.search); } catch(e){}
+  console.log('[coast] token found in hash, length:', params.access_token.length);
+  // Clean hash from URL so a hard refresh doesn't re-use the same token
+  try { history.replaceState(null, '', window.location.pathname + window.location.search); } catch(e){}
   bootWithToken(params.access_token);
   return true;
 }
 
 function bootWithToken(tok){
   token = tok;
-  // Schedule refresh at 50min
+  console.log('[coast] bootWithToken called, appBooted='+appBooted);
   clearTimeout(refreshTimer);
   refreshTimer = setTimeout(function(){
-    // Re-trigger sign-in to get fresh token
-    if (tokenClient) tokenClient.requestAccessToken({ prompt:'none', login_hint: loadHint() });
+    if (tokenClient) tokenClient.requestAccessToken({ prompt:'select_account' });
   }, 50*60*1000);
 
-  // Fetch profile from Google
-  fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-    headers: { 'Authorization': 'Bearer '+tok }
-  }).then(function(r){
-    if (!r.ok) throw new Error('userinfo '+r.status);
-    return r.json();
-  }).then(function(u){
-    var name = u.name||((u.given_name||'')+' '+(u.family_name||'')).trim()||u.email||'?';
-    var p = { name:name.trim(), email:u.email||'', picture:u.picture||'' };
-    saveProfile(p); saveHint(p.email);
-    applyProfile(p);
-  }).catch(function(e){ console.warn('userinfo:',e); applyProfile(loadProfile()); });
-
+  // Show app immediately with cached profile
   if (!appBooted){
     appBooted = true;
     var cached = loadProfile();
+    console.log('[coast] cached profile:', cached);
     if (cached) applyProfile(cached);
     ge('lw').style.display  = 'none';
     ge('app').style.display = 'block';
     loadDrive().then(renderAll);
   }
+
+  // Fetch fresh profile — runs after app is shown
+  fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+    headers: { 'Authorization': 'Bearer ' + tok }
+  }).then(function(r){
+    console.log('[coast] userinfo status:', r.status);
+    if (!r.ok) throw new Error('userinfo HTTP ' + r.status);
+    return r.json();
+  }).then(function(u){
+    console.log('[coast] userinfo:', JSON.stringify(u));
+    var name = (u.name || ((u.given_name||'')+' '+(u.family_name||'')).trim() || u.email || '?').trim();
+    var p = { name: name, email: u.email||'', picture: u.picture||'' };
+    saveProfile(p);
+    saveHint(p.email);
+    applyProfile(p);
+    // Re-apply after short delay in case DOM wasn't ready
+    setTimeout(function(){ applyProfile(p); }, 300);
+  }).catch(function(e){
+    console.error('[coast] userinfo failed:', e);
+    var cached = loadProfile();
+    if (cached) applyProfile(cached);
+  });
 }
 
 // ── Drive API ─────────────────────────────────────
