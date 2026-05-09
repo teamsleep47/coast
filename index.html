@@ -33,21 +33,27 @@ body{background:var(--bg);color:var(--tx);font-family:'DM Mono',monospace;font-s
 #sbtn:disabled{opacity:.45;cursor:default}
 .lnote{font-size:11px;color:var(--dim)}
 
-/* HEADER */
+/* APP */
 #app{display:none;min-height:100vh}
-header{position:sticky;top:0;z-index:50;background:rgba(10,10,15,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--bdr);padding:0 18px;height:54px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+header{position:sticky;top:0;z-index:50;background:rgba(10,10,15,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--bdr);padding:0 18px;height:56px;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .brand{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;flex-shrink:0}
 .brand b{color:var(--ac);font-weight:800}
-/* sync pill lives in header now */
-#hpill{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mu);padding:4px 10px;border-radius:99px;border:1px solid transparent;transition:all .25s;flex-shrink:0}
-#hpill.sv{color:var(--am);border-color:rgba(251,191,36,.4);background:rgba(251,191,36,.07)}
-#hpill.ok{color:var(--gr);border-color:rgba(74,222,128,.4);background:rgba(74,222,128,.07)}
-#hpill.er{color:var(--re);border-color:rgba(248,113,113,.4);background:rgba(248,113,113,.07)}
-#hpill .dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0}
-.hr{display:flex;align-items:center;gap:7px}
-.uchip{display:flex;align-items:center;gap:6px;background:var(--sur2);border:1px solid var(--bdr);border-radius:100px;padding:3px 10px 3px 3px;font-size:12px;color:var(--mu);flex-shrink:0}
-.av{width:26px;height:26px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;overflow:hidden;flex-shrink:0}
+#hpill{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--mu);padding:3px 10px;border-radius:99px;border:1px solid transparent;transition:all .3s;flex-shrink:0;min-width:0}
+#hpill.sv{color:var(--am);border-color:rgba(251,191,36,.35);background:rgba(251,191,36,.06)}
+#hpill.ok{color:var(--gr);border-color:rgba(74,222,128,.35);background:rgba(74,222,128,.06)}
+#hpill.er{color:var(--re);border-color:rgba(248,113,113,.35);background:rgba(248,113,113,.06)}
+#hpill .hdot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0}
+.hr{display:flex;align-items:center;gap:7px;flex-shrink:0}
+
+/* USER CHIP — shows pfp, name, email */
+.uchip{display:flex;align-items:center;gap:8px;background:var(--sur2);border:1px solid var(--bdr);border-radius:100px;padding:3px 12px 3px 3px;cursor:default}
+.av{width:28px;height:28px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;overflow:hidden;flex-shrink:0}
 .av img{width:100%;height:100%;object-fit:cover}
+.uinfo{display:flex;flex-direction:column;line-height:1.2}
+.uname{font-size:12px;color:var(--tx);font-weight:500}
+.uemail{font-size:10px;color:var(--mu)}
+@media(max-width:600px){.uemail{display:none}}
+
 .hbtn{background:none;border:1px solid var(--bdr);border-radius:var(--rs);color:var(--mu);font-family:'DM Mono',monospace;font-size:11px;padding:4px 9px;cursor:pointer;transition:all .18s;white-space:nowrap}
 .hbtn:hover{border-color:var(--ac);color:var(--ac)}
 #obtn:hover{border-color:var(--re)!important;color:var(--re)!important}
@@ -61,8 +67,6 @@ main{max-width:880px;margin:0 auto;padding:22px 14px 96px;display:flex;flex-dire
 .al.on{display:flex}
 .al.w{background:var(--amd);border:1px solid rgba(251,191,36,.28);color:var(--am)}
 .al.d{background:var(--red);border:1px solid rgba(248,113,113,.28);color:var(--re)}
-
-/* OVERVIEW */
 .og{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
 .sb{background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--rs);padding:14px}
 .sl{font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.14em;margin-bottom:5px}
@@ -76,12 +80,8 @@ main{max-width:880px;margin:0 auto;padding:22px 14px 96px;display:flex;flex-dire
 .rbf.w{background:linear-gradient(90deg,var(--am),#f59e0b)}
 .rbf.d{background:linear-gradient(90deg,var(--re),#ef4444)}
 .rbs{display:flex;justify-content:space-between;font-size:10px;color:var(--dim);margin-top:4px}
-
-/* TWO COL */
 .two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 @media(max-width:580px){.two{grid-template-columns:1fr}}
-
-/* FORM */
 .fg{display:flex;flex-direction:column;gap:7px;margin-bottom:12px}
 .fl{font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.1em}
 .fi{background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--rs);padding:10px 11px;color:var(--tx);font-family:'DM Mono',monospace;font-size:14px;width:100%;-webkit-appearance:none;appearance:none;transition:border-color .15s}
@@ -94,23 +94,18 @@ select.fi{cursor:pointer}
 .bp:hover{background:var(--hi);box-shadow:0 0 14px var(--glow)}
 .bg{background:var(--sur2);border:1px solid var(--bdr);color:var(--mu)}
 .bg:hover{border-color:var(--bdrh);color:var(--tx)}
-
-/* ALLOWANCE */
 .aw{background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--rs);padding:16px;margin-top:2px}
 .awamt{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;color:var(--hi)}
 .awrows{margin-top:9px;display:flex;flex-direction:column;gap:5px}
 .awr{display:flex;justify-content:space-between;font-size:12px;color:var(--mu)}
 .awr span:last-child{color:var(--tx)}
-/* rollover toggle */
 .aw-tabs{display:flex;gap:6px;margin-bottom:12px}
 .awt{background:none;border:1px solid var(--bdr);border-radius:99px;padding:3px 11px;font-family:'DM Mono',monospace;font-size:11px;color:var(--mu);cursor:pointer;transition:all .15s}
 .awt.on{background:var(--glow);border-color:var(--ac);color:var(--ac)}
-.rollover-info{margin-top:10px;padding:10px 12px;background:var(--sur3);border-radius:var(--rs);font-size:12px;color:var(--mu);line-height:1.6;display:none}
-.rollover-info.show{display:block}
-
-/* SUBSCRIPTIONS */
+.ro-info{margin-top:10px;padding:10px 12px;background:var(--sur3);border-radius:var(--rs);font-size:12px;color:var(--mu);line-height:1.6;display:none}
+.ro-info.show{display:block}
 .sub-list{display:flex;flex-direction:column;gap:6px;margin-top:4px}
-.sub-item{display:flex;align-items:center;gap:10px;padding:9px 10px;background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--rs);transition:border-color .12s}
+.sub-item{display:flex;align-items:center;gap:10px;padding:9px 10px;background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--rs)}
 .sub-item:hover{border-color:var(--bdrh)}
 .sub-name{flex:1;font-size:13px}
 .sub-freq{font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.08em}
@@ -122,8 +117,6 @@ select.fi{cursor:pointer}
 @media(max-width:500px){.sub-add{grid-template-columns:1fr 1fr}.sub-add .s2{grid-column:span 2}}
 .sub-total{display:flex;justify-content:space-between;align-items:center;padding:9px 0 0;border-top:1px solid var(--bdr);margin-top:8px;font-size:12px;color:var(--mu)}
 .sub-total-amt{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--re)}
-
-/* TRANSACTIONS */
 .th{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:7px}
 .flt{display:flex;gap:5px;flex-wrap:wrap}
 .fb{background:none;border:1px solid var(--bdr);border-radius:99px;padding:4px 11px;font-family:'DM Mono',monospace;font-size:11px;color:var(--mu);cursor:pointer;transition:all .15s}
@@ -151,16 +144,13 @@ select.fi{cursor:pointer}
 .eia{width:78px;text-align:right}
 .emp{text-align:center;padding:28px;color:var(--dim);font-size:13px}
 .cc{display:inline-block;background:var(--sur3);border-radius:3px;padding:1px 5px;font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.04em;margin-left:3px}
-
-/* TXN LOG (monthly summary) */
 .log-month{margin-bottom:4px}
-.log-month-hdr{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:var(--sur2);border-radius:var(--rs);font-size:11px;color:var(--mu);cursor:pointer;user-select:none;border:1px solid var(--bdr)}
-.log-month-hdr:hover{border-color:var(--bdrh)}
-.log-month-hdr b{font-family:'Syne',sans-serif;font-size:12px;color:var(--tx)}
-.log-month-hdr .lmr{display:flex;gap:12px;align-items:center}
-.log-month-body{display:none;padding-top:2px}
-.log-month-body.open{display:block}
-
+.log-hdr{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--sur2);border-radius:var(--rs);font-size:11px;color:var(--mu);cursor:pointer;user-select:none;border:1px solid var(--bdr)}
+.log-hdr:hover{border-color:var(--bdrh)}
+.log-hdr b{font-family:'Syne',sans-serif;font-size:12px;color:var(--tx)}
+.log-hdr .lmr{display:flex;gap:10px;align-items:center}
+.log-body{display:none;padding-top:2px}
+.log-body.open{display:block}
 ::-webkit-scrollbar{width:3px}
 ::-webkit-scrollbar-thumb{background:var(--bdrh);border-radius:3px}
 </style>
@@ -185,10 +175,16 @@ select.fi{cursor:pointer}
 <div id="app">
   <header>
     <div class="brand">coast<b>.</b></div>
-    <div id="hpill"><div class="dot"></div><span id="hptxt"></span></div>
+    <div id="hpill"><div class="hdot"></div><span id="hptxt"></span></div>
     <div class="hr">
-      <div class="uchip"><div class="av" id="av"></div><span id="un">—</span></div>
-      <button class="hbtn" id="rbtn">↻ sync</button>
+      <div class="uchip">
+        <div class="av" id="av"></div>
+        <div class="uinfo">
+          <span class="uname" id="un">—</span>
+          <span class="uemail" id="uemail"></span>
+        </div>
+      </div>
+      <button class="hbtn" id="rbtn">↻</button>
       <button class="hbtn" id="obtn">sign out</button>
     </div>
   </header>
@@ -197,7 +193,6 @@ select.fi{cursor:pointer}
     <div id="serr"></div>
     <div class="al" id="alrt"></div>
 
-    <!-- OVERVIEW -->
     <div class="card">
       <div class="ct">Overview</div>
       <div class="og">
@@ -215,7 +210,6 @@ select.fi{cursor:pointer}
       </div>
     </div>
 
-    <!-- SAVINGS + SETTINGS -->
     <div class="two">
       <div class="card">
         <div class="ct">Savings Balance</div>
@@ -231,7 +225,6 @@ select.fi{cursor:pointer}
       </div>
     </div>
 
-    <!-- DAILY ALLOWANCE -->
     <div class="card">
       <div class="ct">Daily Allowance</div>
       <div class="aw-tabs">
@@ -244,16 +237,14 @@ select.fi{cursor:pointer}
         <div style="font-size:12px;color:var(--mu);margin-top:1px">per day</div>
         <div class="awrows" id="awrows"></div>
       </div>
-      <div class="rollover-info" id="ro-info"></div>
+      <div class="ro-info" id="ro-info"></div>
     </div>
 
-    <!-- SUBSCRIPTIONS -->
     <div class="card">
       <div class="ct">Subscriptions</div>
       <div class="sub-list" id="sub-list"></div>
       <div class="sub-total" id="sub-total" style="display:none">
-        <span>Monthly total</span>
-        <span class="sub-total-amt" id="sub-total-amt">$0</span>
+        <span>Monthly total</span><span class="sub-total-amt" id="sub-total-amt">$0</span>
       </div>
       <div class="sub-add">
         <div><div class="fl" style="margin-bottom:5px">Name</div><input class="fi" id="sname" type="text" placeholder="Netflix, Spotify…" style="margin:0"></div>
@@ -265,11 +256,10 @@ select.fi{cursor:pointer}
             <option value="weekly">Weekly</option>
           </select>
         </div>
-        <button class="btn bp s2" id="badd-sub" style="margin-top:0">+ Add</button>
+        <button class="btn bp s2" id="badd-sub">+ Add</button>
       </div>
     </div>
 
-    <!-- TRANSACTIONS -->
     <div class="card">
       <div class="th">
         <div class="ct" style="margin:0">Transactions</div>
@@ -299,370 +289,358 @@ select.fi{cursor:pointer}
       <div class="tl" id="tl"><div class="emp" id="temp">No transactions yet.</div></div>
     </div>
 
-    <!-- TRANSACTION LOG (monthly) -->
     <div class="card">
       <div class="ct">Monthly Log</div>
-      <div id="logbody"><div class="emp" style="padding:16px">No transactions to summarize yet.</div></div>
+      <div id="logbody"><div class="emp" style="padding:16px">No transactions yet.</div></div>
     </div>
-
   </main>
 </div>
 
 <script>
+// ═══════════════════════════════════════════════════
+// ALL JS DEFINED HERE — before GIS script tag loads
+// ═══════════════════════════════════════════════════
 var CLIENT_ID = '610369107204-efsi05f3geu6joojl6tds91ul1r3vdsh.apps.googleusercontent.com';
 var SCOPE     = 'https://www.googleapis.com/auth/drive.appdata';
 var FNAME     = 'budget_caosting.json';
+var LS_USER   = 'coast_user';   // localStorage key for user profile
+var LS_SID    = 'coast_sid';    // localStorage key for session hint (email)
 
-var token = null, fileId = null, saveTimer = null;
-var txnType = 'expense', txnFilter = 'all', editId = null;
+var token = null, fileId = null, saveTimer = null, refreshTimer = null;
+var txnType = 'expense', txnFilter = 'all', editId = null, allowMode = 'std';
 var tokenClient = null;
-var allowMode = 'std'; // 'std' or 'rollover'
 var S = { savings:0, floor:0, date:'', txns:[], subs:[], spent_today:0, last_spend_date:'' };
 
-// ── Helpers ──────────────────────────────────────
+// ── DOM helper ────────────────────────────────────
 function ge(id){ return document.getElementById(id); }
 function money(n){ return '$'+Math.abs(Number(n)||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function today(){ return new Date().toISOString().slice(0,10); }
 
-// ── Header sync pill ─────────────────────────────
+// ── Header sync pill ──────────────────────────────
 function hpill(cls, txt){
-  var p = ge('hpill'), t = ge('hptxt');
-  p.className = cls ? cls : '';
-  t.textContent = txt || '';
+  var p=ge('hpill'), t=ge('hptxt');
+  p.className = cls||'';
+  t.textContent = txt||'';
 }
-function hpillOk(txt){ hpill('ok', txt); setTimeout(function(){ hpill('',''); }, 3000); }
+function hpillOk(txt){ hpill('ok',txt); setTimeout(function(){ hpill('',''); },3000); }
 
-// ── Error display ────────────────────────────────
+// ── Error helpers ─────────────────────────────────
 function showLoginErr(msg){ var e=ge('lerr'); e.textContent=msg; e.style.display='block'; }
 function showSyncErr(msg){
   var e=ge('serr');
   e.innerHTML='⚠ <strong>Sync error:</strong> '+esc(msg)
-    +'<br><small style="opacity:.7">Open F12 console for details. '
-    +'If 403: go to console.cloud.google.com → APIs &amp; Services → Library → search "Google Drive API" → Enable.</small>';
+    +'<br><small style="opacity:.7">If you see 403: '
+    +'console.cloud.google.com → APIs &amp; Services → Library → "Google Drive API" → Enable.</small>';
   e.style.display='block';
 }
 function hideSyncErr(){ var e=ge('serr'); if(e) e.style.display='none'; }
 
-// ── GIS ──────────────────────────────────────────
+// ── User profile (localStorage so it survives refresh) ──
+function saveUserProfile(u){
+  try { localStorage.setItem(LS_USER, JSON.stringify(u)); } catch(e){}
+}
+function loadUserProfile(){
+  try { return JSON.parse(localStorage.getItem(LS_USER)||'null'); } catch(e){ return null; }
+}
+function clearUserProfile(){
+  try { localStorage.removeItem(LS_USER); localStorage.removeItem(LS_SID); } catch(e){}
+}
+function saveSessionHint(email){
+  try { localStorage.setItem(LS_SID, email||''); } catch(e){}
+}
+function loadSessionHint(){
+  try { return localStorage.getItem(LS_SID)||''; } catch(e){ return ''; }
+}
+
+function applyUserProfile(u){
+  if (!u) return;
+  ge('un').textContent    = u.name  || u.given_name || '—';
+  ge('uemail').textContent= u.email || '';
+  var av = ge('av');
+  if (u.picture){
+    var img = new Image();
+    img.onload  = function(){ av.innerHTML='<img src="'+u.picture+'" alt="">'; };
+    img.onerror = function(){ av.textContent = initials(u); };
+    img.src = u.picture;
+  } else {
+    av.textContent = initials(u);
+  }
+}
+function initials(u){
+  var n = (u.name||u.given_name||'?');
+  var parts = n.trim().split(' ');
+  return (parts[0][0]+(parts[1]?parts[1][0]:'')).toUpperCase();
+}
+
+// ── GIS — must be global, called by onload attr ───
 function onGisLoaded(){
   try {
     tokenClient = google.accounts.oauth2.initTokenClient({
       client_id: CLIENT_ID,
       scope: SCOPE,
       callback: onToken,
-      error_callback: function(e){ showLoginErr('Auth error: '+(e.message||JSON.stringify(e))); }
+      error_callback: function(err){
+        // silent fail on auto-restore; show error only if user explicitly clicked sign in
+        if (window._signingIn) showLoginErr('Auth error: '+(err.message||JSON.stringify(err)));
+      }
     });
     ge('sbtn').disabled = false;
     ge('slbl').textContent = 'Continue with Google';
+
+    // ── AUTO-RESTORE SESSION ──────────────────────
+    // If we have a saved user profile, try to silently get a fresh token
+    var hint = loadSessionHint();
+    if (hint){
+      // Show stored profile immediately so the UI feels instant
+      var cached = loadUserProfile();
+      if (cached) applyUserProfile(cached);
+      // Request token silently (no popup) using the hint email
+      // prompt:'' = no UI unless absolutely required
+      window._signingIn = false;
+      tokenClient.requestAccessToken({ prompt:'', login_hint: hint });
+    }
   } catch(e){
-    showLoginErr('Auth init failed: '+e.message+'. Needs https://');
+    showLoginErr('Auth init failed: '+e.message);
   }
 }
 function onGisError(){
   showLoginErr('Could not load Google Sign-In — needs https:// not file://');
 }
+
 function onToken(resp){
   if (resp.error){
-    if (resp.error !== 'access_denied') showLoginErr('Sign-in error: '+(resp.error_description||resp.error));
+    if (resp.error === 'access_denied' || resp.error === 'user_cancel') return;
+    // Other errors: if auto-restore, just stay on login screen silently
+    if (!window._signingIn) return;
+    showLoginErr('Sign-in error: '+(resp.error_description||resp.error));
     return;
   }
   token = resp.access_token;
-  bootApp();
-}
+  window._signingIn = false;
 
-// ── Boot ─────────────────────────────────────────
-function bootApp(){
-  ge('lw').style.display = 'none';
-  ge('app').style.display = 'block';
+  // Refresh token 45 min from now (tokens last 60 min)
+  clearTimeout(refreshTimer);
+  refreshTimer = setTimeout(silentRefresh, 45*60*1000);
+
+  // Fetch fresh user info from Google
   fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
     headers: { Authorization: 'Bearer '+token }
   }).then(function(r){ return r.ok ? r.json() : null; })
     .then(function(u){
       if (!u) return;
-      ge('un').textContent = u.given_name || u.email || '—';
-      var av = ge('av');
-      if (u.picture) av.innerHTML = '<img src="'+u.picture+'" alt="">';
-      else av.textContent = ((u.given_name||'?')[0]+(u.family_name||'?')[0]).toUpperCase();
-    }).catch(function(){});
-  loadDrive().then(function(){ renderAll(); });
+      var profile = {
+        name:       u.name        || ((u.given_name||'')+(u.family_name?' '+u.family_name:'')).trim(),
+        given_name: u.given_name  || '',
+        email:      u.email       || '',
+        picture:    u.picture     || ''
+      };
+      saveUserProfile(profile);
+      saveSessionHint(profile.email);
+      applyUserProfile(profile);
+    }).catch(function(){
+      // Use cached profile if network fails
+      applyUserProfile(loadUserProfile());
+    });
+
+  // Show app if it's hidden (first sign-in or returning session)
+  if (ge('app').style.display === 'none' || !ge('app').style.display){
+    ge('lw').style.display = 'none';
+    ge('app').style.display = 'block';
+    loadDrive().then(function(){ renderAll(); });
+  } else {
+    // Token refreshed silently, no need to re-load data
+  }
 }
 
-// ── Drive — THE FIX: Authorization header set correctly ──────
-// Object.assign merges left-to-right so extra (with Content-Type) must come AFTER base
-function authHeaders(extra){
-  var base = { 'Authorization': 'Bearer '+token };
-  if (!extra) return base;
-  // Merge: base first, then extra — so Content-Type from extra is NOT overwritten
-  return Object.assign({}, base, extra);
+function silentRefresh(){
+  var hint = loadSessionHint();
+  if (!hint || !token) return;
+  tokenClient.requestAccessToken({ prompt:'', login_hint: hint });
+}
+
+// ── Drive ──────────────────────────────────────────
+// FIX: authHeaders — Authorization first, then spread extra so Content-Type isn't clobbered
+function authH(extra){
+  var h = { 'Authorization': 'Bearer '+token };
+  if (extra) Object.keys(extra).forEach(function(k){ h[k]=extra[k]; });
+  return h;
 }
 
 function findFile(){
-  // Build query manually to avoid any encoding ambiguity
   var url = 'https://www.googleapis.com/drive/v3/files'
     + '?spaces=appDataFolder'
     + '&q=' + encodeURIComponent("name = '"+FNAME+"'")
-    + '&fields=files(id)'
-    + '&pageSize=1';
-  return fetch(url, { headers: authHeaders() })
+    + '&fields=files(id)&pageSize=1';
+  return fetch(url, { headers: authH() })
     .then(function(r){
-      if (!r.ok) return r.text().then(function(t){ throw new Error('Drive list '+r.status+': '+t); });
+      if (!r.ok) return r.text().then(function(t){ throw new Error('list '+r.status+': '+t); });
       return r.json();
     })
-    .then(function(d){
-      return (d.files && d.files.length > 0) ? d.files[0].id : null;
-    });
+    .then(function(d){ return d.files && d.files.length ? d.files[0].id : null; });
 }
 
 function readFile(id){
-  return fetch('https://www.googleapis.com/drive/v3/files/'+id+'?alt=media', {
-    headers: authHeaders()
-  }).then(function(r){
-    if (!r.ok) return r.text().then(function(t){ throw new Error('Drive read '+r.status+': '+t); });
-    return r.json();
-  });
+  return fetch('https://www.googleapis.com/drive/v3/files/'+id+'?alt=media', { headers: authH() })
+    .then(function(r){
+      if (!r.ok) return r.text().then(function(t){ throw new Error('read '+r.status+': '+t); });
+      return r.json();
+    });
 }
 
-function createFile(jsonStr){
+function createFile(json){
   var b = 'cst'+Date.now();
   var meta = '{"name":"'+FNAME+'","parents":["appDataFolder"]}';
-  var body = '--'+b+'\r\n'
-    + 'Content-Type: application/json; charset=UTF-8\r\n\r\n'
-    + meta + '\r\n'
-    + '--'+b+'\r\n'
-    + 'Content-Type: application/json\r\n\r\n'
-    + jsonStr + '\r\n'
-    + '--'+b+'--';
+  var body = '--'+b+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'
+    + meta+'\r\n--'+b+'\r\nContent-Type: application/json\r\n\r\n'
+    + json+'\r\n--'+b+'--';
   return fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id', {
-    method: 'POST',
-    headers: authHeaders({ 'Content-Type': 'multipart/related; boundary='+b }),
+    method:'POST',
+    headers: authH({ 'Content-Type':'multipart/related; boundary='+b }),
     body: body
   }).then(function(r){
-    if (!r.ok) return r.text().then(function(t){ throw new Error('Drive create '+r.status+': '+t); });
+    if (!r.ok) return r.text().then(function(t){ throw new Error('create '+r.status+': '+t); });
     return r.json().then(function(d){ return d.id; });
   });
 }
 
-function updateFile(id, jsonStr){
+function patchFile(id, json){
   return fetch('https://www.googleapis.com/upload/drive/v3/files/'+id+'?uploadType=media', {
-    method: 'PATCH',
-    headers: authHeaders({ 'Content-Type': 'application/json' }),
-    body: jsonStr
+    method:'PATCH',
+    headers: authH({ 'Content-Type':'application/json' }),
+    body: json
   }).then(function(r){
-    if (!r.ok) return r.text().then(function(t){ throw new Error('Drive update '+r.status+': '+t); });
+    if (!r.ok) return r.text().then(function(t){ throw new Error('patch '+r.status+': '+t); });
   });
 }
 
 function loadDrive(){
-  hpill('sv', '⟳ syncing…');
+  hpill('sv','⟳ syncing…');
   return findFile()
     .then(function(id){
       fileId = id;
-      if (!id){
-        hpillOk('✓ ready');
-        return;
-      }
+      if (!id){ hpillOk('✓ ready'); return; }
       return readFile(id).then(function(d){
-        S.savings        = Number(d.savings) || 0;
-        S.floor          = Number(d.floor)   || 0;
-        S.date           = d.date    || '';
+        S.savings        = Number(d.savings)||0;
+        S.floor          = Number(d.floor)  ||0;
+        S.date           = d.date           ||'';
         S.txns           = Array.isArray(d.txns) ? d.txns : [];
         S.subs           = Array.isArray(d.subs) ? d.subs : [];
-        S.spent_today    = Number(d.spent_today)   || 0;
-        S.last_spend_date= d.last_spend_date || '';
+        S.spent_today    = Number(d.spent_today)||0;
+        S.last_spend_date= d.last_spend_date||'';
         hideSyncErr();
         hpillOk('✓ synced');
       });
     })
     .catch(function(e){
       console.error('loadDrive:', e);
-      hpill('er', '✕ sync error');
+      hpill('er','✕ error');
       showSyncErr(e.message);
     });
 }
 
 function saveDrive(){
   if (!token) return;
-  hpill('sv', '⟳ saving…');
+  hpill('sv','⟳ saving…');
   var json = JSON.stringify(S);
-  var p = fileId ? updateFile(fileId, json) : createFile(json).then(function(id){ fileId = id; });
-  p.then(function(){
-    hideSyncErr();
-    hpillOk('✓ saved');
-  }).catch(function(e){
-    console.error('saveDrive:', e);
-    hpill('er', '✕ save failed');
-    showSyncErr(e.message);
-  });
+  var p = fileId ? patchFile(fileId, json) : createFile(json).then(function(id){ fileId=id; });
+  p.then(function(){ hideSyncErr(); hpillOk('✓ saved'); })
+   .catch(function(e){
+     console.error('saveDrive:', e);
+     hpill('er','✕ save failed');
+     showSyncErr(e.message);
+   });
 }
 
-function qsave(){ clearTimeout(saveTimer); saveTimer = setTimeout(saveDrive, 900); }
+function qsave(){ clearTimeout(saveTimer); saveTimer=setTimeout(saveDrive,900); }
 
 // ── Render ────────────────────────────────────────
-function renderAll(){
-  renderInputs();
-  renderOverview();
-  renderAllowance();
-  renderSubs();
-  renderTxns();
-  renderLog();
-}
+function renderAll(){ renderInputs(); renderOverview(); renderAllowance(); renderSubs(); renderTxns(); renderLog(); }
 
 function renderInputs(){
-  ge('isav').value = S.savings || '';
-  ge('iflr').value = S.floor   || '';
-  ge('idat').value = S.date    || '';
+  ge('isav').value=S.savings||'';
+  ge('iflr').value=S.floor||'';
+  ge('idat').value=S.date||'';
 }
 
 function renderOverview(){
   var sav=Number(S.savings)||0, floor=Number(S.floor)||0;
   var ago30=Date.now()-30*864e5;
-  var spent=S.txns
-    .filter(function(t){ return t.type==='expense' && new Date(t.date+'T12:00')>=ago30; })
-    .reduce(function(a,t){ return a+Number(t.amt); }, 0);
+  var spent=S.txns.filter(function(t){ return t.type==='expense'&&new Date(t.date+'T12:00')>=ago30; })
+                  .reduce(function(a,t){ return a+Number(t.amt); },0);
   var burn=spent/30;
-  ge('ss').textContent   = money(sav);
-  ge('sp30').textContent = money(spent);
-  ge('sdb').textContent  = money(burn);
+  ge('ss').textContent=money(sav);
+  ge('sp30').textContent=money(spent);
+  ge('sdb').textContent=money(burn);
   var avail=sav-floor;
-  if (burn>0.01 && avail>0){
-    var d=Math.floor(avail/burn);
-    ge('srw').textContent  = d+'d';
-    ge('srws').textContent = new Date(Date.now()+d*864e5).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-  } else if (avail<=0 && floor>0){
-    ge('srw').textContent='!'; ge('srws').textContent='below floor';
-  } else {
-    ge('srw').textContent='∞'; ge('srws').textContent='no spend data';
-  }
+  if (burn>0.01&&avail>0){ var d=Math.floor(avail/burn); ge('srw').textContent=d+'d'; ge('srws').textContent=new Date(Date.now()+d*864e5).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
+  else if (avail<=0&&floor>0){ ge('srw').textContent='!'; ge('srws').textContent='below floor'; }
+  else { ge('srw').textContent='∞'; ge('srws').textContent='no spend data'; }
   var al=ge('alrt');
-  if (floor>0 && sav<floor){ al.className='al on d'; al.textContent='⚠ '+money(floor-sav)+' below floor.'; }
-  else if (floor>0 && sav<floor*1.1){ al.className='al on w'; al.textContent='⚡ Nearing floor — '+money(sav-floor)+' buffer left.'; }
+  if (floor>0&&sav<floor){ al.className='al on d'; al.textContent='⚠ '+money(floor-sav)+' below floor.'; }
+  else if (floor>0&&sav<floor*1.1){ al.className='al on w'; al.textContent='⚡ Nearing floor — '+money(sav-floor)+' buffer left.'; }
   else { al.className='al'; }
   var rs=ge('rbsec');
-  if (floor>0 && sav>0){
-    rs.style.display='block';
-    var pct=Math.min(100,Math.max(0,(avail/sav)*100));
-    ge('rbf').style.width=pct+'%';
-    ge('rbf').className='rbf'+(pct<20?' d':pct<40?' w':'');
-    ge('rbpct').textContent=pct.toFixed(0)+'% above floor';
-    ge('rbfl').textContent='floor: '+money(floor);
-    ge('rbb').textContent='balance: '+money(sav);
-  } else { rs.style.display='none'; }
+  if (floor>0&&sav>0){ rs.style.display='block'; var pct=Math.min(100,Math.max(0,(avail/sav)*100)); ge('rbf').style.width=pct+'%'; ge('rbf').className='rbf'+(pct<20?' d':pct<40?' w':''); ge('rbpct').textContent=pct.toFixed(0)+'% above floor'; ge('rbfl').textContent='floor: '+money(floor); ge('rbb').textContent='balance: '+money(sav); }
+  else { rs.style.display='none'; }
 }
 
-function calcDailyAllowance(){
-  var sav=Number(S.savings)||0, floor=Number(S.floor)||0;
-  var spendable=sav-floor, dt=S.date;
-  if (!dt || spendable<=0) return { pd:0, days:0, spendable:spendable, valid:false };
+function calcAllow(){
+  var sav=Number(S.savings)||0, floor=Number(S.floor)||0, sp=sav-floor, dt=S.date;
+  if (!dt||sp<=0) return {valid:false,expired:!dt,pd:0,days:0,sp:sp};
   var days=Math.round((new Date(dt+'T12:00')-new Date())/864e5);
-  if (days<=0) return { pd:0, days:0, spendable:spendable, valid:false, expired:true };
-  return { pd:spendable/days, days:days, spendable:spendable, valid:true };
+  if (days<=0) return {valid:false,expired:true,pd:0,days:0,sp:sp};
+  return {valid:true,pd:sp/days,days:days,sp:sp};
 }
 
 function renderAllowance(){
-  var a=calcDailyAllowance();
+  var a=calcAllow();
   function arow(l,v){ return '<div class="awr"><span>'+l+'</span><span>'+v+'</span></div>'; }
-
   if (allowMode==='rollover'){
     ge('aw-label').textContent='Adjusted allowance';
-    var roInfo=ge('ro-info');
-    if (!a.valid){
-      ge('awday').textContent='—';
-      ge('awrows').innerHTML='<div style="color:var(--dim);font-size:12px;margin-top:8px">Set savings, floor and coast date to enable rollover.</div>';
-      roInfo.className='rollover-info';
-      return;
-    }
-    // Rollover: if you spent less than allowance yesterday, carry forward the difference
+    if (!a.valid){ ge('awday').textContent='—'; ge('awrows').innerHTML='<div style="color:var(--dim);font-size:12px;margin-top:8px">Set savings, floor and coast date first.</div>'; ge('ro-info').className='ro-info'; return; }
     var t=today();
-    var stdPd=a.pd;
-    // Sum spending today
-    var spentToday=S.txns
-      .filter(function(x){ return x.type==='expense' && x.date===t; })
-      .reduce(function(acc,x){ return acc+Number(x.amt); },0);
-    // Calculate rollover from yesterday
+    var spentToday=S.txns.filter(function(x){ return x.type==='expense'&&x.date===t; }).reduce(function(acc,x){ return acc+Number(x.amt); },0);
     var rollover=0;
-    if (S.last_spend_date && S.last_spend_date!==t){
+    if (S.last_spend_date&&S.last_spend_date!==t){
       var yest=new Date(); yest.setDate(yest.getDate()-1);
-      var yestStr=yest.toISOString().slice(0,10);
-      if (S.last_spend_date===yestStr){
-        rollover=Math.max(0, stdPd - S.spent_today);
-      }
+      if (S.last_spend_date===yest.toISOString().slice(0,10)) rollover=Math.max(0,a.pd-S.spent_today);
     }
-    var adjusted=stdPd+rollover;
-    var remaining=Math.max(0,adjusted-spentToday);
-    ge('awday').textContent=money(adjusted);
-    ge('awrows').innerHTML=
-      arow('Base allowance', money(stdPd))+
-      arow('Rolled over from yesterday', rollover>0?'+'+money(rollover):'$0.00')+
-      arow('Spent today', money(spentToday))+
-      arow('Remaining today', money(remaining));
-    roInfo.className='rollover-info show';
-    roInfo.innerHTML='<span style="color:var(--mu)">Unspent daily allowance carries forward to the next day. Yesterday\'s leftover: </span><strong style="color:var(--hi)">'+money(rollover)+'</strong>';
-    // Persist today's spend for tomorrow's rollover calc
-    S.spent_today    = spentToday;
-    S.last_spend_date= t;
+    var adj=a.pd+rollover, rem=Math.max(0,adj-spentToday);
+    ge('awday').textContent=money(adj);
+    ge('awrows').innerHTML=arow('Base allowance',money(a.pd))+arow('Rolled over',rollover>0?'+'+money(rollover):'$0.00')+arow('Spent today',money(spentToday))+arow('Remaining today',money(rem));
+    ge('ro-info').className='ro-info show';
+    ge('ro-info').innerHTML='Unspent allowance carries to tomorrow. Yesterday\'s unused: <strong style="color:var(--hi)">'+money(rollover)+'</strong>';
+    S.spent_today=spentToday; S.last_spend_date=t;
   } else {
     ge('aw-label').textContent='You can spend';
-    ge('ro-info').className='rollover-info';
-    if (!a.valid){
-      ge('awday').textContent='—';
-      if (a.expired){
-        ge('awrows').innerHTML='<div style="color:var(--am);font-size:12px;margin-top:8px">Coast date passed — update settings.</div>';
-      } else {
-        ge('awrows').innerHTML='<div style="color:var(--dim);font-size:12px;margin-top:8px">Set savings, floor and coast date to calculate.</div>';
-      }
-      return;
-    }
+    ge('ro-info').className='ro-info';
+    if (!a.valid){ ge('awday').textContent='—'; ge('awrows').innerHTML='<div style="color:'+(a.expired?'var(--am)':'var(--dim)')+';font-size:12px;margin-top:8px">'+(a.expired?'Coast date passed — update settings.':'Set savings, floor and coast date.')+'</div>'; return; }
     ge('awday').textContent=money(a.pd);
-    ge('awrows').innerHTML=
-      arow('Spendable above floor', money(a.spendable))+
-      arow('Days remaining', a.days)+
-      arow('Per week', money(a.pd*7))+
-      arow('Per month', money(a.pd*30));
+    ge('awrows').innerHTML=arow('Spendable above floor',money(a.sp))+arow('Days remaining',a.days)+arow('Per week',money(a.pd*7))+arow('Per month',money(a.pd*30));
   }
 }
 
-// ── Subscriptions ────────────────────────────────
-function subMonthly(s){
-  var a=Number(s.amt)||0;
-  if (s.freq==='yearly') return a/12;
-  if (s.freq==='weekly') return a*52/12;
-  return a;
-}
+function subMo(s){ var a=Number(s.amt)||0; return s.freq==='yearly'?a/12:s.freq==='weekly'?a*52/12:a; }
 
 function renderSubs(){
-  var list=ge('sub-list'), tot=ge('sub-total'), totAmt=ge('sub-total-amt');
-  S.subs = S.subs||[];
+  var list=ge('sub-list'), tot=ge('sub-total');
+  S.subs=S.subs||[];
   if (!S.subs.length){ list.innerHTML='<div class="emp" style="padding:14px 0">No subscriptions yet.</div>'; tot.style.display='none'; return; }
   var total=0;
-  list.innerHTML=S.subs.map(function(s,i){
-    var mo=subMonthly(s); total+=mo;
-    return '<div class="sub-item" data-idx="'+i+'">'
-      +'<span class="sub-name">'+esc(s.name)+'</span>'
-      +'<span class="sub-freq">'+s.freq+'</span>'
-      +'<span class="sub-amt">'+money(s.amt)+'</span>'
-      +'<button class="sub-del" onclick="delSub('+i+')">✕</button>'
-      +'</div>';
-  }).join('');
-  tot.style.display='flex';
-  totAmt.textContent=money(total)+'/mo';
+  list.innerHTML=S.subs.map(function(s,i){ total+=subMo(s); return '<div class="sub-item"><span class="sub-name">'+esc(s.name)+'</span><span class="sub-freq">'+s.freq+'</span><span class="sub-amt">'+money(s.amt)+'</span><button class="sub-del" onclick="delSub('+i+')">✕</button></div>'; }).join('');
+  tot.style.display='flex'; ge('sub-total-amt').textContent=money(total)+'/mo';
 }
 
 function addSub(){
   var name=ge('sname').value.trim(), amt=parseFloat(ge('samt').value), freq=ge('sfreq').value;
   if (!name||isNaN(amt)||amt<=0){ ge('sname').focus(); return; }
-  S.subs=S.subs||[];
-  S.subs.push({ name:name, amt:amt, freq:freq });
+  S.subs=S.subs||[]; S.subs.push({name:name,amt:amt,freq:freq});
   ge('sname').value=''; ge('samt').value='';
   renderSubs(); qsave();
 }
+function delSub(i){ S.subs.splice(i,1); renderSubs(); qsave(); }
 
-function delSub(i){
-  S.subs.splice(i,1);
-  renderSubs(); qsave();
-}
-
-// ── Transactions ──────────────────────────────────
 function renderTxns(){
   var list=ge('tl'), emp=ge('temp');
   var txns=[].concat(S.txns).sort(function(a,b){ return new Date(b.date)-new Date(a.date); });
@@ -670,97 +648,31 @@ function renderTxns(){
   if (!txns.length){ list.innerHTML=''; emp.style.display='block'; return; }
   emp.style.display='none';
   var fd=function(d){ return new Date(d+'T12:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); };
-  list.innerHTML=txns.map(function(t){
-    return '<div class="txn" data-id="'+t.id+'" ondblclick="startEdit(\''+t.id+'\',event)">'
-      +'<div class="tdot '+(t.type==='expense'?'ex':'in')+'"></div>'
-      +'<div class="tds">'+esc(t.desc)+'<span class="cc">'+esc(t.cat||'gen')+'</span></div>'
-      +'<div class="tam '+(t.type==='expense'?'ex':'in')+'">'+(t.type==='expense'?'−':'+')+money(t.amt)+'</div>'
-      +'<button class="tdl" onclick="delTxn(\''+t.id+'\',event)">✕</button>'
-      +'<div></div><div class="tdt">'+fd(t.date)+'</div>'
-      +'</div>';
-  }).join('');
+  list.innerHTML=txns.map(function(t){ return '<div class="txn" data-id="'+t.id+'" ondblclick="startEdit(\''+t.id+'\',event)"><div class="tdot '+(t.type==='expense'?'ex':'in')+'"></div><div class="tds">'+esc(t.desc)+'<span class="cc">'+esc(t.cat||'gen')+'</span></div><div class="tam '+(t.type==='expense'?'ex':'in')+'">'+(t.type==='expense'?'−':'+')+money(t.amt)+'</div><button class="tdl" onclick="delTxn(\''+t.id+'\',event)">✕</button><div></div><div class="tdt">'+fd(t.date)+'</div></div>'; }).join('');
 }
 
-// ── Monthly Log ───────────────────────────────────
 function renderLog(){
   var body=ge('logbody');
-  if (!S.txns.length){ body.innerHTML='<div class="emp" style="padding:16px">No transactions to summarize yet.</div>'; return; }
-  // Group by YYYY-MM
+  if (!S.txns.length){ body.innerHTML='<div class="emp" style="padding:16px">No transactions yet.</div>'; return; }
   var groups={};
-  S.txns.forEach(function(t){
-    var key=t.date.slice(0,7);
-    if (!groups[key]) groups[key]={ key:key, txns:[], income:0, expense:0 };
-    groups[key].txns.push(t);
-    if (t.type==='income') groups[key].income+=Number(t.amt);
-    else groups[key].expense+=Number(t.amt);
-  });
+  S.txns.forEach(function(t){ var k=t.date.slice(0,7); if(!groups[k]) groups[k]={txns:[],inc:0,exp:0}; groups[k].txns.push(t); if(t.type==='income') groups[k].inc+=Number(t.amt); else groups[k].exp+=Number(t.amt); });
   var keys=Object.keys(groups).sort().reverse();
   body.innerHTML=keys.map(function(k){
-    var g=groups[k];
-    var dt=new Date(k+'-15');
-    var label=dt.toLocaleDateString('en-US',{month:'long',year:'numeric'});
-    var net=g.income-g.expense;
-    var netStr=(net>=0?'+':'')+money(net);
-    var netCol=net>=0?'var(--gr)':'var(--re)';
-    var rows=g.txns.slice().sort(function(a,b){ return new Date(b.date)-new Date(a.date); })
-      .map(function(t){
-        var fd=new Date(t.date+'T12:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
-        return '<div class="txn" style="font-size:12px">'
-          +'<div class="tdot '+(t.type==='expense'?'ex':'in')+'"></div>'
-          +'<div class="tds">'+esc(t.desc)+'<span class="cc">'+esc(t.cat||'gen')+'</span></div>'
-          +'<div class="tam '+(t.type==='expense'?'ex':'in')+'">'+(t.type==='expense'?'−':'+')+money(t.amt)+'</div>'
-          +'<div></div>'
-          +'<div></div><div class="tdt">'+fd+'</div>'
-          +'</div>';
-      }).join('');
-    return '<div class="log-month">'
-      +'<div class="log-month-hdr" onclick="toggleLog(\'lg-'+k+'\')">'
-      +'<b>'+label+'</b>'
-      +'<div class="lmr">'
-      +'<span style="color:var(--re);font-size:11px">−'+money(g.expense)+'</span>'
-      +'<span style="color:var(--gr);font-size:11px">+'+money(g.income)+'</span>'
-      +'<span style="color:'+netCol+';font-size:11px;font-family:\'Syne\',sans-serif;font-weight:600">'+netStr+'</span>'
-      +'<span style="color:var(--dim);font-size:11px">▾</span>'
-      +'</div></div>'
-      +'<div class="log-month-body" id="lg-'+k+'">'+rows+'</div>'
-      +'</div>';
+    var g=groups[k], net=g.inc-g.exp, label=new Date(k+'-15').toLocaleDateString('en-US',{month:'long',year:'numeric'});
+    var rows=g.txns.slice().sort(function(a,b){ return new Date(b.date)-new Date(a.date); }).map(function(t){ var fd=new Date(t.date+'T12:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}); return '<div class="txn" style="font-size:12px"><div class="tdot '+(t.type==='expense'?'ex':'in')+'"></div><div class="tds">'+esc(t.desc)+'<span class="cc">'+esc(t.cat||'gen')+'</span></div><div class="tam '+(t.type==='expense'?'ex':'in')+'">'+(t.type==='expense'?'−':'+')+money(t.amt)+'</div><div></div><div></div><div class="tdt">'+fd+'</div></div>'; }).join('');
+    return '<div class="log-month"><div class="log-hdr" onclick="toggleLog(\'lg'+k+'\')"><b>'+label+'</b><div class="lmr"><span style="color:var(--re);font-size:11px">−'+money(g.exp)+'</span><span style="color:var(--gr);font-size:11px">+'+money(g.inc)+'</span><span style="color:'+(net>=0?'var(--gr)':'var(--re)')+';font-family:\'Syne\',sans-serif;font-weight:600;font-size:11px">'+(net>=0?'+':'')+money(net)+'</span><span style="color:var(--dim)">▾</span></div></div><div class="log-body" id="lg'+k+'">'+rows+'</div></div>';
   }).join('');
-  // Open current month by default
-  var cur=today().slice(0,7);
-  var el=ge('lg-'+cur); if(el) el.classList.add('open');
+  var cur=today().slice(0,7); var el=ge('lg'+cur); if(el) el.classList.add('open');
 }
 
-function toggleLog(id){
-  var el=ge(id); if(!el) return;
-  el.classList.toggle('open');
-}
+function toggleLog(id){ var el=ge(id); if(el) el.classList.toggle('open'); }
 
-// ── Actions ───────────────────────────────────────
+// ── Actions ────────────────────────────────────────
 function saveSavings(){ var v=parseFloat(ge('isav').value); if(isNaN(v)) return; S.savings=v; renderAll(); qsave(); }
 function saveGoals(){ S.floor=parseFloat(ge('iflr').value)||0; S.date=ge('idat').value||''; renderAll(); qsave(); }
-
-function setType(t){
-  txnType=t;
-  ge('tbex').className='tb ex'+(t==='expense'?' on':'');
-  ge('tbin').className='tb in'+(t==='income'?' on':'');
-  if(t==='income') ge('tcat').value='income';
-  else if(ge('tcat').value==='income') ge('tcat').value='general';
-}
-
-function addTxn(){
-  var d=ge('tdsc').value.trim(), a=parseFloat(ge('tamt').value), c=ge('tcat').value;
-  if(!d||isNaN(a)||a<=0){ ge('tdsc').focus(); return; }
-  S.txns.push({ id:Date.now().toString(), desc:d, amt:a, cat:c, type:txnType, date:today() });
-  S.savings=(Number(S.savings)||0)+(txnType==='income'?a:-a);
-  ge('tdsc').value=''; ge('tamt').value='';
-  renderAll(); qsave();
-}
-
-function delTxn(id,e){
-  e.stopPropagation();
-  S.txns=S.txns.filter(function(t){ return t.id!==id; });
-  renderTxns(); renderOverview(); renderLog(); qsave();
-}
+function setType(t){ txnType=t; ge('tbex').className='tb ex'+(t==='expense'?' on':''); ge('tbin').className='tb in'+(t==='income'?' on':''); if(t==='income') ge('tcat').value='income'; else if(ge('tcat').value==='income') ge('tcat').value='general'; }
+function addTxn(){ var d=ge('tdsc').value.trim(), a=parseFloat(ge('tamt').value), c=ge('tcat').value; if(!d||isNaN(a)||a<=0){ ge('tdsc').focus(); return; } S.txns.push({id:Date.now().toString(),desc:d,amt:a,cat:c,type:txnType,date:today()}); S.savings=(Number(S.savings)||0)+(txnType==='income'?a:-a); ge('tdsc').value=''; ge('tamt').value=''; renderAll(); qsave(); }
+function delTxn(id,e){ e.stopPropagation(); S.txns=S.txns.filter(function(t){ return t.id!==id; }); renderTxns(); renderOverview(); renderLog(); qsave(); }
 
 function startEdit(id,e){
   if(e.target.classList.contains('tdl')) return;
@@ -773,7 +685,6 @@ function startEdit(id,e){
   row.querySelector('.tam').innerHTML='<input class="ei eia" id="eia'+id+'" value="'+t.amt+'" onblur="commitEdit(\''+id+'\')" onkeydown="ekd(event,\''+id+'\')">';
   var el=ge('eid'+id); if(el) el.focus();
 }
-
 function commitEdit(id){
   if(editId!==id) return; editId=null;
   var t=S.txns.find(function(x){ return x.id===id; }); if(!t) return;
@@ -782,58 +693,34 @@ function commitEdit(id){
   if(ae){ var v=parseFloat(ae.value); if(!isNaN(v)&&v>0) t.amt=v; }
   renderAll(); qsave();
 }
+function ekd(e,id){ if(e.key==='Enter'){ e.preventDefault(); commitEdit(id); } if(e.key==='Escape'){ editId=null; renderTxns(); } }
 
-function ekd(e,id){
-  if(e.key==='Enter'){ e.preventDefault(); commitEdit(id); }
-  if(e.key==='Escape'){ editId=null; renderTxns(); }
-}
-
-// ── Wire events ───────────────────────────────────
-ge('sbtn').addEventListener('click', function(){
-  if(!tokenClient){ showLoginErr('Not ready — try refreshing.'); return; }
-  ge('lerr').style.display='none';
-  tokenClient.requestAccessToken({ prompt:'select_account' });
-});
-ge('obtn').addEventListener('click', function(){
-  if(token) google.accounts.oauth2.revoke(token, function(){});
-  token=null; fileId=null;
-  S={ savings:0, floor:0, date:'', txns:[], subs:[], spent_today:0, last_spend_date:'' };
-  ge('lw').style.display='flex'; ge('app').style.display='none';
-  ge('lerr').style.display='none'; hpill('','');
-});
-ge('rbtn').addEventListener('click', function(){
-  hideSyncErr();
-  loadDrive().then(function(){ renderAll(); });
-});
+// ── Wire events ────────────────────────────────────
+ge('sbtn').addEventListener('click', function(){ if(!tokenClient){ showLoginErr('Not ready — refresh.'); return; } ge('lerr').style.display='none'; window._signingIn=true; tokenClient.requestAccessToken({prompt:'select_account'}); });
+ge('obtn').addEventListener('click', function(){ if(token) google.accounts.oauth2.revoke(token,function(){}); clearTimeout(refreshTimer); token=null; fileId=null; clearUserProfile(); S={savings:0,floor:0,date:'',txns:[],subs:[],spent_today:0,last_spend_date:''}; ge('lw').style.display='flex'; ge('app').style.display='none'; ge('lerr').style.display='none'; hpill('',''); });
+ge('rbtn').addEventListener('click', function(){ hideSyncErr(); loadDrive().then(function(){ renderAll(); }); });
 ge('bsav').addEventListener('click', saveSavings);
 ge('bgoal').addEventListener('click', saveGoals);
 ge('badd').addEventListener('click', addTxn);
 ge('badd-sub').addEventListener('click', addSub);
 ge('tbex').addEventListener('click', function(){ setType('expense'); });
 ge('tbin').addEventListener('click', function(){ setType('income'); });
-ge('isav').addEventListener('keydown', function(e){ if(e.key==='Enter') saveSavings(); });
+ge('isav').addEventListener('keydown',function(e){ if(e.key==='Enter') saveSavings(); });
 ge('isav').addEventListener('blur', saveSavings);
-ge('iflr').addEventListener('keydown', function(e){ if(e.key==='Enter') saveGoals(); });
+ge('iflr').addEventListener('keydown',function(e){ if(e.key==='Enter') saveGoals(); });
 ge('iflr').addEventListener('blur', saveGoals);
 ge('idat').addEventListener('change', saveGoals);
-ge('tdsc').addEventListener('keydown', function(e){ if(e.key==='Enter') addTxn(); });
-ge('tamt').addEventListener('keydown', function(e){ if(e.key==='Enter') addTxn(); });
-ge('sname').addEventListener('keydown', function(e){ if(e.key==='Enter') addSub(); });
-ge('samt').addEventListener('keydown', function(e){ if(e.key==='Enter') addSub(); });
-ge('awt-std').addEventListener('click', function(){ allowMode='std'; ge('awt-std').className='awt on'; ge('awt-ro').className='awt'; renderAllowance(); });
-ge('awt-ro').addEventListener('click', function(){ allowMode='rollover'; ge('awt-ro').className='awt on'; ge('awt-std').className='awt'; renderAllowance(); });
-document.addEventListener('click', function(e){ if(editId&&!e.target.closest('.txn')) commitEdit(editId); });
-document.querySelectorAll('.fb').forEach(function(b){
-  b.addEventListener('click', function(){
-    txnFilter=b.dataset.f;
-    document.querySelectorAll('.fb').forEach(function(x){ x.classList.remove('on'); });
-    b.classList.add('on');
-    renderTxns();
-  });
-});
+ge('tdsc').addEventListener('keydown',function(e){ if(e.key==='Enter') addTxn(); });
+ge('tamt').addEventListener('keydown',function(e){ if(e.key==='Enter') addTxn(); });
+ge('sname').addEventListener('keydown',function(e){ if(e.key==='Enter') addSub(); });
+ge('samt').addEventListener('keydown',function(e){ if(e.key==='Enter') addSub(); });
+ge('awt-std').addEventListener('click',function(){ allowMode='std'; ge('awt-std').className='awt on'; ge('awt-ro').className='awt'; renderAllowance(); });
+ge('awt-ro').addEventListener('click',function(){ allowMode='rollover'; ge('awt-ro').className='awt on'; ge('awt-std').className='awt'; renderAllowance(); });
+document.addEventListener('click',function(e){ if(editId&&!e.target.closest('.txn')) commitEdit(editId); });
+document.querySelectorAll('.fb').forEach(function(b){ b.addEventListener('click',function(){ txnFilter=b.dataset.f; document.querySelectorAll('.fb').forEach(function(x){ x.classList.remove('on'); }); b.classList.add('on'); renderTxns(); }); });
 </script>
 
-<!-- GIS loads LAST — all functions above are already defined -->
+<!-- GIS script last — onGisLoaded already defined above -->
 <script src="https://accounts.google.com/gsi/client" onload="onGisLoaded()" onerror="onGisError()"></script>
 </body>
 </html>
