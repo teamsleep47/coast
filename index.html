@@ -355,48 +355,40 @@ function initials(name){
   return (parts[0][0]+(parts[1]?parts[1][0]:'')).toUpperCase();
 }
 
-// ── GIS auth ──────────────────────────────────────
-// GitHub Pages sends COOP:same-origin which blocks ALL GIS popups.
-// Solution: use ux_mode:'redirect' — no popup, Google redirects back with
-// the token in the URL hash. We parse it on load, store it, done.
+// ── Auth — direct OAuth2 implicit flow (no GIS library) ──────────────
+// Builds the Google auth URL ourselves and redirects. No popups, no COOP issues.
+// Token comes back in URL hash on redirect.
+
+function oauthUrl(){
+  var params = [
+    'client_id='    + encodeURIComponent(CLIENT_ID),
+    'redirect_uri=' + encodeURIComponent(currentPageUrl()),
+    'response_type=token',
+    'scope='        + encodeURIComponent(SCOPE + ' https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email'),
+    'include_granted_scopes=true',
+    'prompt=select_account'
+  ];
+  return 'https://accounts.google.com/o/oauth2/v2/auth?' + params.join('&');
+}
+
+function oauthUrlHint(hint){
+  var params = [
+    'client_id='    + encodeURIComponent(CLIENT_ID),
+    'redirect_uri=' + encodeURIComponent(currentPageUrl()),
+    'response_type=token',
+    'scope='        + encodeURIComponent(SCOPE + ' https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email'),
+    'include_granted_scopes=true',
+    'prompt=none',
+    'login_hint='   + encodeURIComponent(hint)
+  ];
+  return 'https://accounts.google.com/o/oauth2/v2/auth?' + params.join('&');
+}
 
 function currentPageUrl(){
   return window.location.origin + window.location.pathname;
 }
 
-function onGisLoaded(){
-  // First: check if we're returning from a Google redirect (token in URL hash)
-  if (checkHashToken()) return; // token found, app booting, don't need tokenClient yet
-  // Also check localStorage for stored session
-  var hint = loadHint();
-  if (hint){
-    var cached = loadProfile();
-    if (cached){
-      // We have a cached profile but no token — need fresh token
-      // Just enable the button and show cached profile on login screen
-      applyProfile(cached);
-    }
-  }
-  try {
-    tokenClient = google.accounts.oauth2.initTokenClient({
-      client_id: CLIENT_ID,
-      scope: SCOPE,
-      ux_mode: 'redirect',
-      redirect_uri: currentPageUrl(),
-      callback: '', // unused in redirect mode
-      error_callback: function(err){
-        console.warn('token error:', err);
-        showLoginErr('Auth error: '+(err.message||err.type||JSON.stringify(err)));
-      }
-    });
-    ge('sbtn').disabled = false;
-    ge('slbl').textContent = 'Continue with Google';
-  } catch(e){ showLoginErr('Auth init failed: '+e.message); }
-}
-
-function onGisError(){ showLoginErr('Google Sign-In failed to load — must use https://'); }
-
-// Parse token from URL hash after Google redirect
+// Called on every page load — checks URL hash for token from Google redirect
 function checkHashToken(){
   var hash = window.location.hash;
   if (!hash || hash.length < 2) return false;
@@ -405,59 +397,125 @@ function checkHashToken(){
     var eq = pair.indexOf('=');
     if (eq < 0) return;
     var k = pair.slice(0, eq);
-    var v = pair.slice(eq + 1);
-    // Use replace for + before decoding (access tokens can contain +)
-    try { params[decodeURIComponent(k)] = decodeURIComponent(v.replace(/\+/g,' ')); } catch(e){ params[k]=v; }
+    var v = pair.slice(eq + 1).replace(/\+/g, '%20');
+    try { params[decodeURIComponent(k)] = decodeURIComponent(v); } catch(e){ params[k]=v; }
   });
-  console.log('[coast] hash params keys:', Object.keys(params));
+  console.log('[coast] hash keys:', Object.keys(params).join(','));
   if (!params.access_token) return false;
-  console.log('[coast] token found in hash, length:', params.access_token.length);
-  // Clean hash from URL so a hard refresh doesn't re-use the same token
+  // Wipe hash from URL immediately so refresh doesn't reuse same token
   try { history.replaceState(null, '', window.location.pathname + window.location.search); } catch(e){}
+  console.log('[coast] token length:', params.access_token.length);
   bootWithToken(params.access_token);
   return true;
 }
 
 function bootWithToken(tok){
   token = tok;
-  console.log('[coast] bootWithToken called, appBooted='+appBooted);
+  console.log('[coast] bootWithToken, appBooted='+appBooted);
   clearTimeout(refreshTimer);
+  // Tokens last 1hr — redirect to re-auth at 55min
   refreshTimer = setTimeout(function(){
-    if (tokenClient) tokenClient.requestAccessToken({ prompt:'select_account' });
-  }, 50*60*1000);
+    var hint = loadHint();
+    window.location.href = hint ? oauthUrlHint(hint) : oauthUrl();
+  }, 55*60*1000);
 
-  // Show app immediately with cached profile
+  // Show app immediately with any cached profile
   if (!appBooted){
     appBooted = true;
     var cached = loadProfile();
-    console.log('[coast] cached profile:', cached);
-    if (cached) applyProfile(cached);
+    if (cached){ console.log('[coast] applying cached profile:', cached.name); applyProfile(cached); }
     ge('lw').style.display  = 'none';
     ge('app').style.display = 'block';
     loadDrive().then(renderAll);
   }
 
-  // Fetch fresh profile — runs after app is shown
+  // Fetch fresh profile from Google
   fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
     headers: { 'Authorization': 'Bearer ' + tok }
   }).then(function(r){
     console.log('[coast] userinfo status:', r.status);
-    if (!r.ok) throw new Error('userinfo HTTP ' + r.status);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
     return r.json();
   }).then(function(u){
-    console.log('[coast] userinfo:', JSON.stringify(u));
-    var name = (u.name || ((u.given_name||'')+' '+(u.family_name||'')).trim() || u.email || '?').trim();
-    var p = { name: name, email: u.email||'', picture: u.picture||'' };
-    saveProfile(p);
-    saveHint(p.email);
+    console.log('[coast] userinfo ok:', u.name, u.email);
+    var name = (u.name || ((u.given_name||'') + ' ' + (u.family_name||'')).trim() || u.email || '?').trim();
+    var p = { name:name, email:u.email||'', picture:u.picture||'' };
+    saveProfile(p); saveHint(p.email);
     applyProfile(p);
-    // Re-apply after short delay in case DOM wasn't ready
-    setTimeout(function(){ applyProfile(p); }, 300);
-  }).catch(function(e){
-    console.error('[coast] userinfo failed:', e);
-    var cached = loadProfile();
-    if (cached) applyProfile(cached);
+  }).catch(function(e){ console.error('[coast] userinfo error:', e); });
+}
+
+// Kick off auth — just redirect to Google
+function startAuth(){
+  var hint = loadHint();
+  window.location.href = hint ? oauthUrlHint(hint) : oauthUrl();
+}
+
+// Try silent re-auth on load if we have a hint
+function trySilentRestore(){
+  var hint = loadHint();
+  if (!hint) return false;
+  console.log('[coast] trying silent restore for:', hint);
+  // Show cached profile on login screen while we wait
+  var cached = loadProfile();
+  if (cached) applyProfile(cached);
+  window.location.href = oauthUrlHint(hint);
+  return true;
+}
+
+// Wire sign-in button
+function initAuth(){
+  // 1. Check if returning from Google redirect
+  if (checkHashToken()) return;
+  // 2. Try silent restore with stored hint (prompt:none)
+  var hint = loadHint();
+  if (hint){
+    // prompt:none will fail if no active session but won't show UI
+    // The redirect happens, if it fails Google redirects back with error in hash
+    console.log('[coast] silent restore attempt for:', hint);
+    window.location.href = oauthUrlHint(hint);
+    return;
+  }
+  // 3. No session at all — enable sign-in button
+  ge('sbtn').disabled = false;
+  ge('slbl').textContent = 'Continue with Google';
+}
+
+// Handle error hash params (e.g. prompt:none failing)
+function checkHashError(){
+  var hash = window.location.hash;
+  if (!hash) return false;
+  var params = {};
+  hash.slice(1).split('&').forEach(function(pair){
+    var eq = pair.indexOf('=');
+    if (eq >= 0) try{ params[decodeURIComponent(pair.slice(0,eq))] = decodeURIComponent(pair.slice(eq+1)); }catch(e){}
   });
+  if (params.error){
+    console.log('[coast] hash error:', params.error);
+    try { history.replaceState(null,'',window.location.pathname+window.location.search); }catch(e){}
+    // Silent restore failed — just show the sign-in button
+    ge('sbtn').disabled = false;
+    ge('slbl').textContent = 'Continue with Google';
+    return true;
+  }
+  return false;
+}
+
+// Main entry point — called on page load (no GIS library needed)
+function onPageReady(){
+  // Check for error first
+  if (checkHashError()) return;
+  // Check for successful token
+  if (checkHashToken()) return;
+  // Try silent restore or show button
+  var hint = loadHint();
+  if (hint){
+    console.log('[coast] hint found, attempting silent restore');
+    window.location.href = oauthUrlHint(hint);
+  } else {
+    ge('sbtn').disabled = false;
+    ge('slbl').textContent = 'Continue with Google';
+  }
 }
 
 // ── Drive API ─────────────────────────────────────
@@ -727,11 +785,9 @@ function ekd(e,id){ if(e.key==='Enter'){ e.preventDefault(); commitEdit(id); } i
 
 // ── Wire ──────────────────────────────────────────
 ge('sbtn').addEventListener('click',function(){
-  if(!tokenClient){ showLoginErr('Not ready — please wait.'); return; }
   ge('lerr').style.display='none';
   var hint = loadHint();
-  // redirect mode: this navigates away to Google, then back with token in hash
-  tokenClient.requestAccessToken(hint ? {prompt:'',login_hint:hint} : {prompt:'select_account'});
+  window.location.href = oauthUrl(); // always show account picker on manual click
 });
 ge('obtn').addEventListener('click',function(){
   clearTimeout(refreshTimer);
@@ -740,6 +796,8 @@ ge('obtn').addEventListener('click',function(){
   S={savings:0,floor:0,date:'',txns:[],subs:[],rollover_bank:0,last_allowance_date:''};
   ge('lw').style.display='flex'; ge('app').style.display='none';
   ge('lerr').style.display='none'; hpill('','');
+  // Revoke via Google (best effort)
+  if(token) fetch('https://oauth2.googleapis.com/revoke?token='+token,{method:'POST'}).catch(function(){});
 });
 ge('rbtn').addEventListener('click',function(){ hideSyncErr(); loadDrive().then(renderAll); });
 ge('bsav').addEventListener('click',saveSavings);
@@ -768,7 +826,7 @@ document.addEventListener('click',function(e){
 document.querySelectorAll('.fb').forEach(function(b){ b.addEventListener('click',function(){ txnFilter=b.dataset.f; document.querySelectorAll('.fb').forEach(function(x){ x.classList.remove('on'); }); b.classList.add('on'); renderTxns(); }); });
 </script>
 
-<!-- GIS script — MUST be last, all functions above already defined -->
-<script src="https://accounts.google.com/gsi/client" onload="onGisLoaded()" onerror="onGisError()"></script>
+<!-- Auth uses direct OAuth2 redirect — no external library needed -->
+<script>document.addEventListener('DOMContentLoaded', onPageReady);</script>
 </body>
 </html>
