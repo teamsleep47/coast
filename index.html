@@ -356,87 +356,92 @@ function initials(name){
 }
 
 // ── GIS auth ──────────────────────────────────────
+// GitHub Pages sends COOP:same-origin which blocks ALL GIS popups.
+// Solution: use ux_mode:'redirect' — no popup, Google redirects back with
+// the token in the URL hash. We parse it on load, store it, done.
+
+function currentPageUrl(){
+  return window.location.origin + window.location.pathname;
+}
+
 function onGisLoaded(){
+  // First: check if we're returning from a Google redirect (token in URL hash)
+  if (checkHashToken()) return; // token found, app booting, don't need tokenClient yet
+  // Also check localStorage for stored session
+  var hint = loadHint();
+  if (hint){
+    var cached = loadProfile();
+    if (cached){
+      // We have a cached profile but no token — need fresh token
+      // Just enable the button and show cached profile on login screen
+      applyProfile(cached);
+    }
+  }
   try {
     tokenClient = google.accounts.oauth2.initTokenClient({
       client_id: CLIENT_ID,
       scope: SCOPE,
-      callback: onToken,
+      ux_mode: 'redirect',
+      redirect_uri: currentPageUrl(),
+      callback: '', // unused in redirect mode
       error_callback: function(err){
         console.warn('token error:', err);
-        // Only show to user if they deliberately clicked sign-in
-        if (window._manualSignIn) showLoginErr('Auth error: '+(err.message||err.type||JSON.stringify(err)));
+        showLoginErr('Auth error: '+(err.message||err.type||JSON.stringify(err)));
       }
     });
     ge('sbtn').disabled = false;
     ge('slbl').textContent = 'Continue with Google';
-
-    // Auto-restore: try silent token if we have a stored hint
-    var hint = loadHint();
-    if (hint){
-      window._manualSignIn = false;
-      try {
-        tokenClient.requestAccessToken({ prompt:'none', login_hint: hint });
-      } catch(e){
-        tokenClient.requestAccessToken({ prompt:'', login_hint: hint });
-      }
-    }
   } catch(e){ showLoginErr('Auth init failed: '+e.message); }
 }
 
 function onGisError(){ showLoginErr('Google Sign-In failed to load — must use https://'); }
 
-function onToken(resp){
-  if (resp.error){
-    var silent = !window._manualSignIn;
-    if (resp.error === 'access_denied' || resp.error === 'user_cancel') return;
-    if (resp.error === 'immediate_failed' || resp.error === 'interaction_required'){
-      // Silent restore failed — need user interaction, show sign-in button
-      return; // stay on login screen, user will click manually
-    }
-    if (silent) return; // don't show errors for background attempts
-    showLoginErr('Sign-in error: '+(resp.error_description||resp.error));
-    return;
-  }
+// Parse token from URL hash after Google redirect
+function checkHashToken(){
+  var hash = window.location.hash;
+  if (!hash) return false;
+  var params = {};
+  hash.replace(/^#/,'').split('&').forEach(function(p){
+    var kv = p.split('=');
+    params[decodeURIComponent(kv[0])] = decodeURIComponent(kv[1]||'');
+  });
+  if (!params.access_token) return false;
+  // Clean hash from URL immediately so refresh doesn't re-trigger
+  try { history.replaceState(null,'',window.location.pathname+window.location.search); } catch(e){}
+  bootWithToken(params.access_token);
+  return true;
+}
 
-  token = resp.access_token;
-  window._manualSignIn = false;
-
-  // Schedule token refresh at 50 min (tokens expire at 60 min)
+function bootWithToken(tok){
+  token = tok;
+  // Schedule refresh at 50min
   clearTimeout(refreshTimer);
-  refreshTimer = setTimeout(doSilentRefresh, 50*60*1000);
+  refreshTimer = setTimeout(function(){
+    // Re-trigger sign-in to get fresh token
+    if (tokenClient) tokenClient.requestAccessToken({ prompt:'none', login_hint: loadHint() });
+  }, 50*60*1000);
 
-  // Fetch fresh profile — always save then apply so cache is warm for next load
+  // Fetch profile from Google
   fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-    headers: { 'Authorization': 'Bearer '+token }
-  }).then(function(r){ return r.ok ? r.json() : null; })
-    .then(function(u){
-      if (!u) return;
-      var name = u.name || ((u.given_name||'') + (u.family_name ? ' '+u.family_name : '')).trim() || u.email || '—';
-      var p = { name: name, email: u.email||'', picture: u.picture||'' };
-      saveProfile(p);
-      saveHint(p.email);
-      applyProfile(p);
-    }).catch(function(e){ console.warn('userinfo fetch failed:', e); });
+    headers: { 'Authorization': 'Bearer '+tok }
+  }).then(function(r){
+    if (!r.ok) throw new Error('userinfo '+r.status);
+    return r.json();
+  }).then(function(u){
+    var name = u.name||((u.given_name||'')+' '+(u.family_name||'')).trim()||u.email||'?';
+    var p = { name:name.trim(), email:u.email||'', picture:u.picture||'' };
+    saveProfile(p); saveHint(p.email);
+    applyProfile(p);
+  }).catch(function(e){ console.warn('userinfo:',e); applyProfile(loadProfile()); });
 
-  // Boot app on first token, skip on subsequent refreshes
   if (!appBooted){
     appBooted = true;
-    // Apply cached profile immediately so name/pic show before userinfo fetch returns
     var cached = loadProfile();
     if (cached) applyProfile(cached);
     ge('lw').style.display  = 'none';
     ge('app').style.display = 'block';
     loadDrive().then(renderAll);
   }
-}
-
-function doSilentRefresh(){
-  var hint = loadHint();
-  if (!hint) return;
-  window._manualSignIn = false;
-  try { tokenClient.requestAccessToken({ prompt:'none', login_hint: hint }); }
-  catch(e){ tokenClient.requestAccessToken({ prompt:'', login_hint: hint }); }
 }
 
 // ── Drive API ─────────────────────────────────────
@@ -705,8 +710,21 @@ function commitEdit(id, fromBlur){
 function ekd(e,id){ if(e.key==='Enter'){ e.preventDefault(); commitEdit(id); } if(e.key==='Escape'){ editId=null; renderTxns(); } }
 
 // ── Wire ──────────────────────────────────────────
-ge('sbtn').addEventListener('click',function(){ if(!tokenClient){ showLoginErr('Not ready.'); return; } ge('lerr').style.display='none'; window._manualSignIn=true; tokenClient.requestAccessToken({prompt:'select_account'}); });
-ge('obtn').addEventListener('click',function(){ if(token) try{ google.accounts.oauth2.revoke(token,function(){}); }catch(e){} clearTimeout(refreshTimer); token=null; fileId=null; appBooted=false; clearSession(); S={savings:0,floor:0,date:'',txns:[],subs:[],rollover_bank:0,last_allowance_date:''}; ge('lw').style.display='flex'; ge('app').style.display='none'; ge('lerr').style.display='none'; hpill('',''); });
+ge('sbtn').addEventListener('click',function(){
+  if(!tokenClient){ showLoginErr('Not ready — please wait.'); return; }
+  ge('lerr').style.display='none';
+  var hint = loadHint();
+  // redirect mode: this navigates away to Google, then back with token in hash
+  tokenClient.requestAccessToken(hint ? {prompt:'',login_hint:hint} : {prompt:'select_account'});
+});
+ge('obtn').addEventListener('click',function(){
+  clearTimeout(refreshTimer);
+  token=null; fileId=null; appBooted=false;
+  clearSession();
+  S={savings:0,floor:0,date:'',txns:[],subs:[],rollover_bank:0,last_allowance_date:''};
+  ge('lw').style.display='flex'; ge('app').style.display='none';
+  ge('lerr').style.display='none'; hpill('','');
+});
 ge('rbtn').addEventListener('click',function(){ hideSyncErr(); loadDrive().then(renderAll); });
 ge('bsav').addEventListener('click',saveSavings);
 ge('bgoal').addEventListener('click',saveGoals);
