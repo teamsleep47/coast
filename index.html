@@ -374,11 +374,7 @@ function onGisLoaded(){
     // Auto-restore: try silent token if we have a stored hint
     var hint = loadHint();
     if (hint){
-      var cached = loadProfile();
-      if (cached) applyProfile(cached); // show instantly from cache
       window._manualSignIn = false;
-      // prompt:none = truly silent, fails if no active Google session
-      // We fall back to prompt:'' which shows account chooser if needed
       try {
         tokenClient.requestAccessToken({ prompt:'none', login_hint: hint });
       } catch(e){
@@ -410,20 +406,25 @@ function onToken(resp){
   clearTimeout(refreshTimer);
   refreshTimer = setTimeout(doSilentRefresh, 50*60*1000);
 
-  // Fetch fresh profile from Google
+  // Fetch fresh profile — always save then apply so cache is warm for next load
   fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
     headers: { 'Authorization': 'Bearer '+token }
   }).then(function(r){ return r.ok ? r.json() : null; })
     .then(function(u){
-      if (!u) { applyProfile(loadProfile()); return; }
-      var p = { name: u.name||((u.given_name||'')+' '+(u.family_name||'')).trim(), email: u.email||'', picture: u.picture||'' };
-      saveProfile(p); saveHint(p.email);
+      if (!u) return;
+      var name = u.name || ((u.given_name||'') + (u.family_name ? ' '+u.family_name : '')).trim() || u.email || '—';
+      var p = { name: name, email: u.email||'', picture: u.picture||'' };
+      saveProfile(p);
+      saveHint(p.email);
       applyProfile(p);
-    }).catch(function(){ applyProfile(loadProfile()); });
+    }).catch(function(e){ console.warn('userinfo fetch failed:', e); });
 
   // Boot app on first token, skip on subsequent refreshes
   if (!appBooted){
     appBooted = true;
+    // Apply cached profile immediately so name/pic show before userinfo fetch returns
+    var cached = loadProfile();
+    if (cached) applyProfile(cached);
     ge('lw').style.display  = 'none';
     ge('app').style.display = 'block';
     loadDrive().then(renderAll);
@@ -724,7 +725,12 @@ ge('sname').addEventListener('keydown',function(e){ if(e.key==='Enter') addSub()
 ge('samt').addEventListener('keydown',function(e){ if(e.key==='Enter') addSub(); });
 ge('awt-std').addEventListener('click',function(){ allowMode='std'; ge('awt-std').className='awt on'; ge('awt-ro').className='awt'; renderAllowance(); });
 ge('awt-ro').addEventListener('click',function(){ allowMode='rollover'; ge('awt-ro').className='awt on'; ge('awt-std').className='awt'; renderAllowance(); });
-document.addEventListener('click',function(e){ if(editId&&!e.target.closest('.txn')) commitEdit(editId); });
+document.addEventListener('click',function(e){
+  // Only commit edit if clicking outside a txn row AND not on a button/input
+  if(editId && !e.target.closest('.txn') && e.target.tagName!=='BUTTON' && e.target.tagName!=='INPUT'){
+    commitEdit(editId);
+  }
+});
 document.querySelectorAll('.fb').forEach(function(b){ b.addEventListener('click',function(){ txnFilter=b.dataset.f; document.querySelectorAll('.fb').forEach(function(x){ x.classList.remove('on'); }); b.classList.add('on'); renderTxns(); }); });
 </script>
 
