@@ -161,10 +161,12 @@ select.fi{cursor:pointer}
     <div class="brand">coast<b>.</b></div>
     <div class="hr">
       <div class="uchip"><div class="av" id="av"></div><span id="un">—</span></div>
+      <button id="rbtn" style="background:none;border:1px solid var(--bdr);border-radius:var(--rs);color:var(--mu);font-family:'DM Mono',monospace;font-size:11px;padding:4px 9px;cursor:pointer;transition:all .18s" onmouseover="this.style.borderColor='var(--ac)';this.style.color='var(--ac)'" onmouseout="this.style.borderColor='var(--bdr)';this.style.color='var(--mu)'">↻ sync</button>
       <button id="obtn">sign out</button>
     </div>
   </header>
   <main>
+    <div id="sync-err" style="display:none;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.35);border-radius:12px;padding:14px 16px;font-size:12px;color:#f87171;line-height:1.7;word-break:break-word"></div>
     <div class="al" id="alrt"></div>
 
     <!-- OVERVIEW -->
@@ -306,6 +308,17 @@ function money(n){ return '$'+Math.abs(Number(n)||0).toLocaleString('en-US',{min
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function now(){ return new Date().toISOString().slice(0,10); }
 
+// ── Sync error banner ───────────────────────────
+function showSyncError(msg) {
+  var el = ge('sync-err');
+  if (!el) return;
+  el.textContent = '⚠ ' + msg + ' — check browser console (F12) for details. Make sure Google Drive API is enabled at console.cloud.google.com → APIs & Services → Library → search "Drive API" → Enable.';
+  el.style.display = 'block';
+}
+function hideSyncError() {
+  var el = ge('sync-err'); if (el) el.style.display = 'none';
+}
+
 // ── Boot ─────────────────────────────────────────
 async function bootApp() {
   // Fetch user profile
@@ -325,6 +338,10 @@ async function bootApp() {
 }
 
 // ── Sign out ─────────────────────────────────────
+ge('rbtn').addEventListener('click', function(){
+  hideSyncError();
+  loadDrive().then(renderAll);
+});
 ge('obtn').addEventListener('click', function(){
   if (token) window.google.accounts.oauth2.revoke(token, function(){});
   token = null; fileId = null;
@@ -360,24 +377,30 @@ async function findFile() {
 }
 
 async function loadDrive() {
-  pill('sv', 'Loading…');
+  pill('sv', 'Loading from Drive…');
   try {
     fileId = await findFile();
     if (fileId) {
       var r = await apiFetch('https://www.googleapis.com/drive/v3/files/'+fileId+'?alt=media');
       if (!r.ok) { var t = await r.text(); throw new Error('read '+r.status+': '+t); }
       var loaded = await r.json();
-      // Merge carefully — always keep txns as array
       S.savings = loaded.savings || 0;
       S.floor   = loaded.floor   || 0;
       S.date    = loaded.date    || '';
       S.txns    = Array.isArray(loaded.txns) ? loaded.txns : [];
+      pill('ok', 'Loaded ✓');
+      setTimeout(pillHide, 1600);
+    } else {
+      pill('ok', 'No data yet — starting fresh');
+      setTimeout(pillHide, 2000);
     }
-    pillHide();
   } catch(e) {
     console.error('loadDrive:', e);
-    pill('er', 'Load failed — '+e.message.slice(0,60));
-    setTimeout(pillHide, 6000);
+    // Show the full error visibly so you can diagnose it
+    var msg = e.message || String(e);
+    pill('er', 'Sync error: '+msg.slice(0,80));
+    // Also show in app as a persistent banner
+    showSyncError('Drive load failed: '+msg);
   }
 }
 
@@ -411,11 +434,13 @@ async function saveDrive() {
       if (!ru.ok) { var tu = await ru.text(); throw new Error('update '+ru.status+': '+tu); }
     }
     pill('ok', 'Saved ✓');
+    hideSyncError();
     setTimeout(pillHide, 1600);
   } catch(e) {
     console.error('saveDrive:', e);
-    pill('er', 'Save failed — '+e.message.slice(0,60));
-    setTimeout(pillHide, 6000);
+    var msg = e.message || String(e);
+    pill('er', 'Save failed: '+msg.slice(0,80));
+    showSyncError('Drive save failed: '+msg);
   }
 }
 
