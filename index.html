@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Coast — Budget Tracker</title>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="https://accounts.google.com/gsi/client"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -728,16 +728,18 @@ function initGoogleAuth() {
     client_id: CLIENT_ID,
     scope: SCOPES,
     callback: async (resp) => {
-      if (resp.error) { console.error(resp); return; }
+      if (resp.error) { console.error('Token error:', resp); return; }
       accessToken = resp.access_token;
       await onSignedIn();
     }
   });
-
-  document.getElementById('google-signin-btn').addEventListener('click', () => {
-    tokenClient.requestAccessToken({ prompt: 'consent' });
-  });
 }
+
+document.getElementById('google-signin-btn').addEventListener('click', () => {
+  if (!tokenClient) { alert('Google auth not ready yet — please wait a moment and try again.'); return; }
+  // Empty string = show consent only if needed (not every time)
+  tokenClient.requestAccessToken({ prompt: '' });
+});
 
 async function onSignedIn() {
   // Get user info
@@ -816,33 +818,54 @@ async function loadFromDrive() {
 
 async function saveToDrive() {
   showSaveIndicator('saving', 'Saving…');
-  const content = JSON.stringify(state, null, 2);
+  const data = JSON.stringify(state, null, 2);
   try {
     if (!driveFileId) {
-      // Create
-      const meta = { name: FILE_NAME, parents: ['appDataFolder'] };
-      const form = new FormData();
-      form.append('metadata', new Blob([JSON.stringify(meta)], { type: 'application/json' }));
-      form.append('media', new Blob([content], { type: 'application/json' }));
+      // Create — manually build multipart body so Content-Type boundary is correct
+      const boundary = 'coastapp_' + Date.now();
+      const meta = JSON.stringify({ name: FILE_NAME, parents: ['appDataFolder'] });
+      const body = '--' + boundary + '\r\n'
+        + 'Content-Type: application/json; charset=UTF-8\r\n\r\n'
+        + meta + '\r\n'
+        + '--' + boundary + '\r\n'
+        + 'Content-Type: application/json\r\n\r\n'
+        + data + '\r\n'
+        + '--' + boundary + '--';
       const r = await fetch(
         'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',
-        { method: 'POST', headers: { Authorization: `Bearer ${accessToken}` }, body: form }
+        {
+          method: 'POST',
+          headers: {
+            Authorization: 'Bearer ' + accessToken,
+            'Content-Type': 'multipart/related; boundary=' + boundary
+          },
+          body
+        }
       );
+      if (!r.ok) throw new Error(await r.text());
       const d = await r.json();
       driveFileId = d.id;
     } else {
-      // Update
-      await driveRequest(
-        `https://www.googleapis.com/upload/drive/v3/files/${driveFileId}?uploadType=media`,
-        'PATCH', content, 'application/json'
+      // Update — simple media upload
+      const r = await fetch(
+        'https://www.googleapis.com/upload/drive/v3/files/' + driveFileId + '?uploadType=media',
+        {
+          method: 'PATCH',
+          headers: {
+            Authorization: 'Bearer ' + accessToken,
+            'Content-Type': 'application/json'
+          },
+          body: data
+        }
       );
+      if (!r.ok) throw new Error(await r.text());
     }
     showSaveIndicator('saved', 'Saved ✓');
     setTimeout(hideSaveIndicator, 1800);
   } catch(e) {
     console.error('Save error:', e);
-    showSaveIndicator('error', 'Save failed');
-    setTimeout(hideSaveIndicator, 2500);
+    showSaveIndicator('error', 'Save failed — check console');
+    setTimeout(hideSaveIndicator, 3000);
   }
 }
 
@@ -1164,9 +1187,16 @@ document.getElementById('goal-floor').addEventListener('blur', saveGoals);
 // ═══════════════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════════════
-window.addEventListener('load', () => {
-  google.accounts.id.initialize({ client_id: CLIENT_ID });
+// GIS library calls window.onGoogleLibraryLoad when ready
+// Fallback: also try on DOMContentLoaded in case it loaded first
+function bootAuth() {
+  if (typeof google === 'undefined' || !google.accounts) return;
   initGoogleAuth();
+}
+window.onGoogleLibraryLoad = bootAuth;
+document.addEventListener('DOMContentLoaded', () => {
+  // If GIS already loaded before DOMContentLoaded fired
+  setTimeout(bootAuth, 100);
 });
 </script>
 </body>
