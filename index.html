@@ -91,7 +91,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(8,8,14,.95);backdrop-fil
 .ct{font-family:'Syne',sans-serif;font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--mu);margin-bottom:12px;display:flex;align-items:center;gap:5px}
 
 /* ── Overview stat boxes ── */
-.og{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.og{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
 .sb{background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--rs);padding:12px 14px}
 .sl{font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.12em;margin-bottom:6px;display:flex;align-items:center;gap:4px}
 .sv{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.02em;line-height:1}
@@ -202,62 +202,94 @@ select.fi{cursor:pointer}
     flex:1;
     overflow:hidden;
     display:grid;
-    grid-template-columns:minmax(0,1.15fr) minmax(0,1fr) minmax(0,1fr);
+    grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr);
     grid-template-rows:auto auto auto auto auto;
     gap:5px;
     padding:5px 8px 8px;
     align-content:start;
   }
+  /* Grid placement */
   .d-overview{ grid-column:1/-1; grid-row:1; }
   .d-txn     { grid-column:1; grid-row:2/6; display:flex; flex-direction:column; overflow:hidden; }
   .d-savings { grid-column:2; grid-row:2; }
   .d-coast   { grid-column:3; grid-row:2; }
   .d-allow   { grid-column:2; grid-row:3; }
   .d-subs    { grid-column:3; grid-row:3; }
-  .d-log     { grid-column:2/4; grid-row:4; overflow:hidden; }
+  .d-log     { grid-column:2/4; grid-row:4; display:flex; flex-direction:column; overflow:hidden; }
   .d-data    { grid-column:2/4; grid-row:5; }
-  .d-txn .tl { overflow-y:auto; flex:1; }
-  /* Log: collapsed shows just month headers, expanded scrolls inside */
-  .d-log #logbody{ max-height:200px; overflow-y:auto; }
-  main .card { padding:8px 10px; }
-  main .ct   { margin-bottom:6px; font-size:8px; }
-  main .fg   { margin-bottom:6px; }
-  main .fi   { padding:6px 8px; }
-  main .btn  { padding:6px 10px; }
-  main .sb   { padding:8px 10px; }
-  main .og   { gap:5px; }
-  main .sv   { font-size:18px; }
-  main .awamt{ font-size:20px; }
-  main .ro-stat-val{ font-size:14px; }
-  main .ro-stat{ padding:7px 8px; }
-  main .ro-grid{ gap:5px; }
-  main .ro-card{ padding:8px 10px; margin-top:6px; }
-  main .aw   { padding:9px 11px; }
-  main .aw-tabs{ margin-bottom:6px; }
-  main .awrows{ gap:2px; margin-top:5px; }
-  main .txn  { padding:5px 7px; }
-  main .af   { padding:7px 9px; gap:5px; margin-bottom:6px; }
-  main .th   { margin-bottom:6px; }
-  main .sub-item{ padding:5px 7px; }
-  main .sub-add{ margin-top:6px; gap:5px; }
-  main .log-hdr{ padding:5px 8px; }
-  main .rbw  { margin-top:6px; }
-  main .emp  { padding:12px; }
-  main p     { font-size:10px; line-height:1.4; }
+  /* Scrollable internals */
+  .d-txn .tl { overflow-y:auto; flex:1; min-height:40px; }
+  .d-log #logbody{ overflow-y:auto; flex:1; min-height:40px; max-height:220px; }
+  /* Compact internals */
+  main .card  { padding:8px 10px; }
+  main .ct    { margin-bottom:5px; font-size:8px; letter-spacing:.16em; }
+  main .fg    { margin-bottom:5px; gap:4px; }
+  main .fi    { padding:5px 8px; font-size:11px; }
+  main .btn   { padding:6px 10px; font-size:11px; }
+  main .sb    { padding:7px 9px; }
+  main .sl    { font-size:8px; margin-bottom:4px; }
+  main .sv    { font-size:16px; }
+  main .ss    { font-size:8px; margin-top:2px; }
+  main .og    { gap:4px; }
+  main .rbw   { margin-top:5px; }
+  main .rb    { height:3px; }
+  main .rbl   { font-size:9px; margin-bottom:3px; }
+  main .rbs   { font-size:8px; }
+  main .aw    { padding:8px 10px; }
+  main .awamt { font-size:18px; }
+  main .awr   { font-size:10px; }
+  main .awrows{ gap:2px; margin-top:4px; }
+  main .aw-tabs{ margin-bottom:5px; }
+  main .awt   { padding:2px 9px; font-size:9px; }
+  main .ro-card{ padding:7px 9px; margin-top:5px; }
+  main .ro-grid{ gap:4px; }
+  main .ro-stat{ padding:6px 8px; }
+  main .ro-stat-lbl{ font-size:8px; }
+  main .ro-stat-val{ font-size:13px; }
+  main .ro-card-title{ font-size:8px; margin-bottom:5px; }
+  main .txn   { padding:4px 7px; gap:5px 6px; }
+  main .tds   { font-size:11px; }
+  main .tam   { font-size:11px; }
+  main .tdt   { font-size:9px; }
+  main .tedit,.tdel{ font-size:9px; padding:1px 5px; }
+  main .cc    { font-size:8px; padding:0 4px; }
+  main .af    { padding:6px 8px; gap:4px; margin-bottom:5px; }
+  main .th    { margin-bottom:5px; }
+  main .fb    { font-size:9px; padding:2px 9px; }
+  main .fl    { font-size:8px; }
+  main .sub-item{ padding:4px 7px; font-size:11px; }
+  main .sub-name{ font-size:11px; }
+  main .sub-amt{ font-size:11px; }
+  main .sub-freq{ font-size:8px; }
+  main .sub-del{ font-size:9px; padding:1px 5px; }
+  main .sub-add{ margin-top:5px; gap:4px; }
+  main .sub-total{ padding-top:5px; margin-top:5px; font-size:10px; }
+  main .sub-total-amt{ font-size:11px; }
+  main .log-hdr{ padding:4px 8px; font-size:10px; }
+  main .log-hdr b{ font-size:10px; }
+  main .log-hdr .lmr{ gap:8px; }
+  main .rbw   { margin-top:5px; }
+  main .emp   { padding:10px; font-size:11px; }
+  main p      { font-size:10px; line-height:1.4; margin-top:4px; }
+  main .tip-icon{ width:10px; height:10px; font-size:7px; }
 }
+/* ── Tablet: 2-col ── */
 @media(min-width:600px) and (max-width:959px){
-  main{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .d-overview,.d-txn,.d-log,.d-data{grid-column:1/-1}
-  .d-savings,.d-allow{grid-column:1}
-  .d-coast,.d-subs{grid-column:2}
+  main{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px 14px 40px}
+  .d-overview{grid-column:1/-1}
+  .d-txn     {grid-column:1/-1}
+  .d-savings {grid-column:1}
+  .d-coast   {grid-column:2}
+  .d-allow   {grid-column:1}
+  .d-subs    {grid-column:2}
+  .d-log     {grid-column:1/-1}
+  .d-data    {grid-column:1/-1}
+  .og{grid-template-columns:repeat(3,1fr)}
 }
+/* ── Mobile: single column ── */
 @media(max-width:599px){
-  main{display:flex;flex-direction:column;gap:12px}
-}
-
-/* ── Mobile main layout (only applies below 600px) ── */
-@media(max-width:599px){
-  main{display:flex;flex-direction:column;gap:10px;padding:10px 14px 40px;width:100%}
+  main{display:flex;flex-direction:column;gap:12px;padding:12px 12px 60px}
+  .og{grid-template-columns:1fr 1fr}
 }
 
 /* ── Scrollbar ── */
@@ -305,19 +337,23 @@ select.fi{cursor:pointer}
       <div class="ct">Overview</div>
       <div class="og">
         <div class="sb">
-          <div class="sl tip-wrap">Savings <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">Your total liquid savings balance. Updated manually or auto-adjusted when you log transactions.</span></span></div>
+          <div class="sl tip-wrap">Savings <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">Your total liquid savings. Auto-adjusts when you log transactions.</span></span></div>
           <div class="sv g" id="ss">$0</div><div class="ss">current balance</div>
+        </div>
+        <div class="sb">
+          <div class="sl tip-wrap">Today's Budget <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">Your base daily allowance plus any rollover from yesterday, minus what you've spent today. This is your real-time spending budget.</span></span></div>
+          <div class="sv" id="s-today" style="color:var(--hi)">—</div><div class="ss" id="s-today-sub">remaining today</div>
         </div>
         <div class="sb">
           <div class="sl tip-wrap">Spent (30d) <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">Total expenses logged in the last 30 days.</span></span></div>
           <div class="sv r" id="sp30">$0</div><div class="ss">last 30 days</div>
         </div>
         <div class="sb">
-          <div class="sl tip-wrap">Daily Burn <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">Your average daily spending over the last 30 days. Used to calculate your runway.</span></span></div>
+          <div class="sl tip-wrap">Daily Burn <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">Average daily spending over 30 days. Used to calculate runway.</span></span></div>
           <div class="sv a" id="sdb">$0</div><div class="ss">avg/day</div>
         </div>
         <div class="sb">
-          <div class="sl tip-wrap">Runway <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">How many days your savings (above your floor) will last at your current daily burn rate. You can&#39;t edit it directly — it updates automatically as you log spending.</span></span></div>
+          <div class="sl tip-wrap">Runway <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">How many days your savings above your floor will last at current burn rate.</span></span></div>
           <div class="sv p" id="srw">—</div><div class="ss" id="srws">at current burn</div>
         </div>
       </div>
@@ -815,12 +851,19 @@ function renderAllowance(){
     var rem=Math.max(0,adj-spentToday);
     var remCls=rem<a.pd*0.25?'neg':rem>a.pd*0.75?'pos':'neu';
     ge('awday').textContent=money(adj);
-    ge('awrows').innerHTML=arow('Base allowance',money(a.pd))+arow('Spent today',money(spentToday))+arow('Remaining today',money(rem));
+    ge('awrows').innerHTML=arow('Base allowance',money(a.pd))+arow('Rolled over',bank>0?'+'+money(bank):'$0.00')+arow('Spent today',money(spentToday))+arow('Remaining today',money(rem));
     ge('ro-base').textContent=money(a.pd);
     ge('ro-rolled').textContent=bank>0?'+'+money(bank):'$0.00';
     ge('ro-spent').textContent=money(spentToday);
     ge('ro-rem').textContent=money(rem);
     ge('ro-rem').className='ro-stat-val '+remCls;
+    // Update overview Today's Budget box
+    var todayEl=ge('s-today'), todaySubEl=ge('s-today-sub');
+    if(todayEl){
+      todayEl.textContent=money(rem);
+      todayEl.style.color=rem<=0?'var(--re)':rem<a.pd*0.3?'var(--am)':'var(--hi)';
+      if(todaySubEl) todaySubEl.textContent=rem<=0?'over budget':'remaining today';
+    }
   } else {
     ge('aw-label').textContent='You can spend';
     ge('ro-card').className='ro-card';
@@ -831,6 +874,16 @@ function renderAllowance(){
     }
     ge('awday').textContent=money(a.pd);
     ge('awrows').innerHTML=arow('Spendable above floor',money(a.sp))+arow('Days remaining',a.days)+arow('Per week',money(a.pd*7))+arow('Per month',money(a.pd*30));
+    // Update overview Today's Budget with standard daily (no rollover mode)
+    var t2=today();
+    var spentT=S.txns.filter(function(x){ return x.type==='expense'&&x.date===t2; }).reduce(function(acc,x){ return acc+Number(x.amt); },0);
+    var remT=Math.max(0,a.pd-spentT);
+    var todayEl2=ge('s-today'), todaySubEl2=ge('s-today-sub');
+    if(todayEl2){
+      todayEl2.textContent=money(remT);
+      todayEl2.style.color=remT<=0?'var(--re)':remT<a.pd*0.3?'var(--am)':'var(--hi)';
+      if(todaySubEl2) todaySubEl2.textContent=remT<=0?'over budget':'remaining today';
+    }
   }
 }
 
