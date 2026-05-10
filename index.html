@@ -39,18 +39,42 @@ body{background:var(--bg);color:var(--tx);font-family:'DM Mono',monospace;font-s
 .tip-box::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--bdrh)}
 .tip-icon:hover + .tip-box, .tip-wrap:hover .tip-box{opacity:1}
 
-/* ── Desktop 2-col grid layout ── */
-@media(min-width:700px){
-  .desk-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
-  .desk-full{grid-column:1/-1}
-  .desk-left{grid-column:1}
-  .desk-right{grid-column:2}
+/* ── Desktop layout: 3-col grid, compact ── */
+@media(min-width:900px){
+  main.desk-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    grid-template-rows:auto;
+    gap:14px;
+    align-items:start;
+    padding-top:16px;
+    padding-bottom:40px;
+  }
+  .desk-full   { grid-column:1/-1; }
+  .desk-left   { grid-column:1; }
+  .desk-mid    { grid-column:2; }
+  .desk-right  { grid-column:3; }
+  .desk-span2  { grid-column:span 2; }
+  /* Make cards more compact on desktop */
+  main.desk-grid .card{ padding:14px; }
+  main.desk-grid .ct{ margin-bottom:10px; }
+  main.desk-grid .fg{ margin-bottom:8px; }
 }
+@media(min-width:700px) and (max-width:899px){
+  main.desk-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    align-items:start;
+  }
+  .desk-full,.desk-span2{ grid-column:1/-1; }
+  .desk-left  { grid-column:1; }
+  .desk-right,.desk-mid{ grid-column:2; }
+}
+/* Mobile: natural document order, no reordering */
 @media(max-width:699px){
-  /* Mobile order via order property */
-  main{display:flex;flex-direction:column}
-  .mob-1{order:1}.mob-2{order:2}.mob-3{order:3}.mob-4{order:4}
-  .mob-5{order:5}.mob-6{order:6}.mob-7{order:7}.mob-8{order:8}
+  main.desk-grid{ display:flex; flex-direction:column; gap:14px; }
+  /* mobile order classes ignored on mobile — cards appear in HTML order */
 }
 #lw{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:100}
 #lw::before{content:'';position:absolute;width:700px;height:700px;background:radial-gradient(circle,rgba(124,106,255,.07) 0%,transparent 65%);top:50%;left:50%;transform:translate(-50%,-55%);pointer-events:none}
@@ -220,7 +244,7 @@ select.fi{cursor:pointer}
   <main class="desk-grid">
     <div id="serr" class="desk-full"></div>
     <div class="al desk-full" id="alrt"></div>
-    <div class="card desk-full mob-1">
+    <div class="card desk-full">
       <div class="ct">Overview</div>
       <div class="og">
         <div class="sb">
@@ -248,62 +272,7 @@ select.fi{cursor:pointer}
         </div>
       </div>
     </div>
-    <div class="card desk-left mob-4">
-        <div class="ct tip-wrap">Savings Balance <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">Your total liquid savings across all accounts. Transactions auto-adjust this, or update it manually anytime.</span></span></div>
-        <div class="fg"><div class="fl">Current Total Savings ($)</div><input class="fi" type="number" id="isav" placeholder="0.00" step="0.01"></div>
-        <button class="btn bp" id="bsav">Update Balance</button>
-        <p style="margin-top:10px;font-size:11px;color:var(--dim);line-height:1.6">Adding transactions auto-adjusts this.</p>
-    </div>
-    <div class="card desk-right mob-5">
-        <div class="ct tip-wrap">Coast Settings <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">Set your floor (minimum you never touch) and coast-until date. These drive your daily allowance.</span></span></div>
-        <div class="fg"><div class="fl tip-wrap">Floor <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">The minimum savings balance you won&#39;t spend below. Acts as your emergency cushion.</span></span></div><input class="fi" type="number" id="iflr" placeholder="e.g. 5000" step="100"></div>
-        <div class="fg"><div class="fl tip-wrap">Coasting Until <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">The date you plan to start earning again. Your daily allowance is calculated to get you to this date with your floor intact.</span></span></div><input class="fi" type="date" id="idat"></div>
-        <button class="btn bg" id="bgoal">Save Settings</button>
-      </div>
-    <div class="card desk-left mob-3">
-      <div class="ct tip-wrap">Daily Allowance <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">How much you can spend per day and still have your floor intact by your coast date. Rollover mode carries unspent amounts forward to the next day.</span></span></div>
-      <div class="aw-tabs">
-        <button class="awt" id="awt-std">Standard</button>
-        <button class="awt on" id="awt-ro">With Rollover</button>
-      </div>
-      <div class="aw">
-        <div style="font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px" id="aw-label">You can spend</div>
-        <div class="awamt" id="awday">—</div>
-        <div style="font-size:12px;color:var(--mu);margin-top:1px">per day</div>
-        <div class="awrows" id="awrows"></div>
-      </div>
-      <!-- Rollover detail card -->
-      <div class="ro-card" id="ro-card">
-        <div class="ro-card-title">Rollover Breakdown</div>
-        <div class="ro-grid">
-          <div class="ro-stat"><div class="ro-stat-lbl">Base Allowance</div><div class="ro-stat-val neu" id="ro-base">—</div></div>
-          <div class="ro-stat"><div class="ro-stat-lbl">Rolled Over</div><div class="ro-stat-val pos" id="ro-rolled">—</div></div>
-          <div class="ro-stat"><div class="ro-stat-lbl">Spent Today</div><div class="ro-stat-val neg" id="ro-spent">—</div></div>
-          <div class="ro-stat"><div class="ro-stat-lbl">Remaining Today</div><div class="ro-stat-val" id="ro-rem">—</div></div>
-        </div>
-        <div style="margin-top:10px;font-size:11px;color:var(--dim);line-height:1.6">Unspent daily allowance carries forward to tomorrow.</div>
-      </div>
-    </div>
-    <div class="card desk-right mob-6">
-      <div class="ct tip-wrap">Subscriptions <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">Track recurring charges. Yearly and weekly amounts are normalized to monthly for the total. These don&#39;t auto-deduct — log them as transactions to keep your balance accurate.</span></span></div>
-      <div class="sub-list" id="sub-list"></div>
-      <div class="sub-total" id="sub-total" style="display:none">
-        <span>Monthly total</span><span class="sub-total-amt" id="sub-total-amt">$0</span>
-      </div>
-      <div class="sub-add">
-        <div><div class="fl" style="margin-bottom:5px">Name</div><input class="fi" id="sname" type="text" placeholder="Netflix, Spotify…" style="margin:0"></div>
-        <div><div class="fl" style="margin-bottom:5px">Amount ($)</div><input class="fi" id="samt" type="number" placeholder="0.00" step="0.01" style="margin:0;width:100px"></div>
-        <div><div class="fl" style="margin-bottom:5px">Frequency</div>
-          <select class="fi" id="sfreq" style="margin:0;width:110px">
-            <option value="monthly">Monthly</option>
-            <option value="yearly">Yearly</option>
-            <option value="weekly">Weekly</option>
-          </select>
-        </div>
-        <button class="btn bp s2" id="badd-sub">+ Add</button>
-      </div>
-    </div>
-    <div class="card desk-full mob-2">
+    <div class="card desk-full">
       <div class="th">
         <div class="ct" style="margin:0">Transactions</div>
         <div class="flt">
@@ -332,13 +301,67 @@ select.fi{cursor:pointer}
       <div class="emp" id="txnemp">No transactions yet.</div>
       <div class="tl" id="txnlist"></div>
     </div>
-    <div class="card desk-full mob-7">
+    <div class="card desk-left">
+        <div class="ct tip-wrap">Savings Balance <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">Your total liquid savings across all accounts. Transactions auto-adjust this, or update it manually anytime.</span></span></div>
+        <div class="fg"><div class="fl">Current Total Savings ($)</div><input class="fi" type="number" id="isav" placeholder="0.00" step="0.01"></div>
+        <button class="btn bp" id="bsav">Update Balance</button>
+        <p style="margin-top:10px;font-size:11px;color:var(--dim);line-height:1.6">Adding transactions auto-adjusts this.</p>
+    </div>
+    <div class="card desk-span2">
+      <div class="ct tip-wrap">Daily Allowance <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">How much you can spend per day and still have your floor intact by your coast date. Rollover mode carries unspent amounts forward to the next day.</span></span></div>
+      <div class="aw-tabs">
+        <button class="awt" id="awt-std">Standard</button>
+        <button class="awt on" id="awt-ro">With Rollover</button>
+      </div>
+      <div class="aw">
+        <div style="font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px" id="aw-label">You can spend</div>
+        <div class="awamt" id="awday">—</div>
+        <div style="font-size:12px;color:var(--mu);margin-top:1px">per day</div>
+        <div class="awrows" id="awrows"></div>
+      </div>
+      <!-- Rollover detail card -->
+      <div class="ro-card" id="ro-card">
+        <div class="ro-card-title">Rollover Breakdown</div>
+        <div class="ro-grid">
+          <div class="ro-stat"><div class="ro-stat-lbl">Base Allowance</div><div class="ro-stat-val neu" id="ro-base">—</div></div>
+          <div class="ro-stat"><div class="ro-stat-lbl">Rolled Over</div><div class="ro-stat-val pos" id="ro-rolled">—</div></div>
+          <div class="ro-stat"><div class="ro-stat-lbl">Spent Today</div><div class="ro-stat-val neg" id="ro-spent">—</div></div>
+          <div class="ro-stat"><div class="ro-stat-lbl">Remaining Today</div><div class="ro-stat-val" id="ro-rem">—</div></div>
+        </div>
+        <div style="margin-top:10px;font-size:11px;color:var(--dim);line-height:1.6">Unspent daily allowance carries forward to tomorrow.</div>
+      </div>
+    </div>
+    <div class="card desk-left">
+        <div class="ct tip-wrap">Coast Settings <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">Set your floor (minimum you never touch) and coast-until date. These drive your daily allowance.</span></span></div>
+        <div class="fg"><div class="fl tip-wrap">Floor <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">The minimum savings balance you won&#39;t spend below. Acts as your emergency cushion.</span></span></div><input class="fi" type="number" id="iflr" placeholder="e.g. 5000" step="100"></div>
+        <div class="fg"><div class="fl tip-wrap">Coasting Until <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">The date you plan to start earning again. Your daily allowance is calculated to get you to this date with your floor intact.</span></span></div><input class="fi" type="date" id="idat"></div>
+        <button class="btn bg" id="bgoal">Save Settings</button>
+      </div>
+    <div class="card desk-mid">
+      <div class="ct tip-wrap">Subscriptions <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">Track recurring charges. Yearly and weekly amounts are normalized to monthly for the total. These don&#39;t auto-deduct — log them as transactions to keep your balance accurate.</span></span></div>
+      <div class="sub-list" id="sub-list"></div>
+      <div class="sub-total" id="sub-total" style="display:none">
+        <span>Monthly total</span><span class="sub-total-amt" id="sub-total-amt">$0</span>
+      </div>
+      <div class="sub-add">
+        <div><div class="fl" style="margin-bottom:5px">Name</div><input class="fi" id="sname" type="text" placeholder="Netflix, Spotify…" style="margin:0"></div>
+        <div><div class="fl" style="margin-bottom:5px">Amount ($)</div><input class="fi" id="samt" type="number" placeholder="0.00" step="0.01" style="margin:0;width:100px"></div>
+        <div><div class="fl" style="margin-bottom:5px">Frequency</div>
+          <select class="fi" id="sfreq" style="margin:0;width:110px">
+            <option value="monthly">Monthly</option>
+            <option value="yearly">Yearly</option>
+            <option value="weekly">Weekly</option>
+          </select>
+        </div>
+        <button class="btn bp s2" id="badd-sub">+ Add</button>
+      </div>
+    </div>
+    <div class="card desk-full">
       <div class="ct tip-wrap">Monthly Log <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">A collapsible month-by-month breakdown of all transactions. Shows income, expenses, and net for each month. Click a month to expand it.</span></span></div>
       <div id="logbody"><div class="emp" style="padding:16px">No transactions yet.</div></div>
     </div>
-
     <!-- IMPORT / EXPORT -->
-    <div class="card desk-full mob-8">
+    <div class="card desk-right">
       <div class="ct">Data</div>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
         <button class="btn bg" id="btn-export" style="width:auto;flex:1">⬇ Export JSON</button>
@@ -364,7 +387,7 @@ var LS_HINT   = 'coast_hint_v2';
 var token = null, fileId = null, saveTimer = null, refreshTimer = null;
 var txnType = 'expense', txnFilter = 'all', editId = null, allowMode = 'rollover';
 var tokenClient = null, appBooted = false;
-var S = { savings:0, floor:0, date:'', txns:[], subs:[], rollover_bank:0, last_allowance_date:'' };
+var S = { base_savings:0, savings:0, floor:0, date:'', txns:[], subs:[], rollover_bank:0, last_allowance_date:'' };
 
 // ── Helpers ───────────────────────────────────────
 function ge(id){ return document.getElementById(id); }
@@ -373,6 +396,15 @@ function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').rep
 function today(){
   // Always use Eastern Time for rollover consistency
   return new Date().toLocaleDateString('en-CA',{timeZone:'America/New_York'});
+}
+
+// ── Savings recompute — always derive from base + transactions ──────
+function recomputeSavings(){
+  var base = Number(S.base_savings)||0;
+  var net  = S.txns.reduce(function(acc,t){
+    return acc + (t.type==='income' ? Number(t.amt) : -Number(t.amt));
+  }, 0);
+  S.savings = Math.round((base + net) * 100) / 100;
 }
 
 // ── Pill ──────────────────────────────────────────
@@ -635,13 +667,14 @@ function loadDrive(){
     fileId=id;
     if (!id){ hpillOk('✓ ready'); return; }
     return readFile(id).then(function(d){
-      S.savings             = Number(d.savings)||0;
+      S.base_savings        = Number(d.base_savings!=null ? d.base_savings : d.savings)||0;
       S.floor               = Number(d.floor)  ||0;
       S.date                = d.date            ||'';
       S.txns                = Array.isArray(d.txns) ? d.txns : [];
       S.subs                = Array.isArray(d.subs) ? d.subs : [];
       S.rollover_bank       = Number(d.rollover_bank)||0;
       S.last_allowance_date = d.last_allowance_date||'';
+      recomputeSavings(); // always recompute after load
       hideSyncErr(); hpillOk('✓ synced');
     });
   }).catch(function(e){ console.error(e); hpill('er','✕ error'); showSyncErr(e.message); });
@@ -661,7 +694,7 @@ function qsave(){ clearTimeout(saveTimer); saveTimer=setTimeout(saveDrive,900); 
 // ── Render ────────────────────────────────────────
 function renderAll(){ renderInputs(); renderOverview(); renderAllowance(); renderSubs(); renderTxns(); renderLog(); }
 
-function renderInputs(){ ge('isav').value=S.savings||''; ge('iflr').value=S.floor||''; ge('idat').value=S.date||''; }
+function renderInputs(){ ge('isav').value=S.savings!==0?S.savings:''; ge('iflr').value=S.floor||''; ge('idat').value=S.date||''; }
 
 function renderOverview(){
   var sav=Number(S.savings)||0, floor=Number(S.floor)||0;
@@ -799,21 +832,32 @@ function renderLog(){
 function toggleLog(id){ var el=ge(id); if(el) el.classList.toggle('open'); }
 
 // ── Actions ───────────────────────────────────────
-function saveSavings(){ var v=parseFloat(ge('isav').value); if(isNaN(v)) return; S.savings=v; renderAll(); qsave(); }
+function saveSavings(){
+  var v=parseFloat(ge('isav').value); if(isNaN(v)) return;
+  // When manually setting savings, treat it as "this is my balance right now"
+  // Rebase: base_savings = entered value - current txn net
+  var net = S.txns.reduce(function(acc,t){ return acc+(t.type==='income'?Number(t.amt):-Number(t.amt)); },0);
+  S.base_savings = Math.round((v - net)*100)/100;
+  S.savings = v;
+  renderAll(); qsave();
+}
 function saveGoals(){ S.floor=parseFloat(ge('iflr').value)||0; S.date=ge('idat').value||''; renderAll(); qsave(); }
 function setType(t){ txnType=t; ge('tbex').className='tb ex'+(t==='expense'?' on':''); ge('tbin').className='tb in'+(t==='income'?' on':''); if(t==='income') ge('tcat').value='income'; else if(ge('tcat').value==='income') ge('tcat').value='general'; }
 
 function addTxn(){
   var d=ge('tdsc').value.trim(), a=parseFloat(ge('tamt').value), c=ge('tcat').value;
   if(!d||isNaN(a)||a<=0){ ge('tdsc').focus(); return; }
-  var t={ id:Date.now().toString(), desc:d, amt:a, cat:c, type:txnType, date:today() };
-  S.txns.push(t);
-  S.savings=(Number(S.savings)||0)+(txnType==='income'?a:-a);
+  S.txns.push({ id:Date.now().toString(), desc:d, amt:a, cat:c, type:txnType, date:today() });
+  recomputeSavings();
   ge('tdsc').value=''; ge('tamt').value='';
   renderAll(); qsave();
 }
 
-function delTxn(id){ S.txns=S.txns.filter(function(t){ return t.id!==id; }); renderTxns(); renderOverview(); renderLog(); qsave(); }
+function delTxn(id){
+  S.txns = S.txns.filter(function(t){ return t.id!==id; });
+  recomputeSavings();
+  renderAll(); qsave();
+}
 
 function startEdit(id){
   if(editId && editId!==id) commitEdit(editId);
@@ -830,15 +874,9 @@ function commitEdit(id, fromBlur){
   if(editId!==id) return; editId=null;
   var t=S.txns.find(function(x){ return x.id===id; }); if(!t) return;
   var de=ge('eid'+id), ae=ge('eia'+id);
-  var oldAmt=Number(t.amt)||0;
   if(de&&de.value.trim()) t.desc=de.value.trim();
-  if(ae){ var v=parseFloat(ae.value); if(!isNaN(v)&&v>0){
-    // adjust savings for the difference
-    var diff=v-oldAmt;
-    if(t.type==='expense') S.savings=(Number(S.savings)||0)-diff;
-    else S.savings=(Number(S.savings)||0)+diff;
-    t.amt=v;
-  }}
+  if(ae){ var v=parseFloat(ae.value); if(!isNaN(v)&&v>0) t.amt=v; }
+  recomputeSavings(); // always correct, no manual arithmetic
   renderAll(); qsave();
 }
 
