@@ -31,60 +31,96 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--tx);font-family:'DM Mono',monospace;font-size:14px;min-height:100vh;overflow-x:hidden}
 
-/* ── Tooltip ── */
-.tip-wrap{position:relative;display:inline-flex;align-items:center;gap:5px}
-.tip-icon{width:14px;height:14px;border-radius:50%;background:var(--sur3);border:1px solid var(--bdrh);color:var(--mu);font-size:9px;display:inline-flex;align-items:center;justify-content:center;cursor:help;flex-shrink:0;font-family:serif;font-style:italic;user-select:none}
+/* ── Tooltip — fixed position, JS-positioned, never clips ── */
+.tip-wrap{position:relative;display:inline-flex;align-items:center;gap:4px}
+.tip-icon{width:13px;height:13px;border-radius:50%;background:var(--sur3);border:1px solid var(--bdrh);color:var(--mu);font-size:8px;display:inline-flex;align-items:center;justify-content:center;cursor:help;flex-shrink:0;font-style:italic;font-family:serif;user-select:none;line-height:1}
 .tip-icon:hover{background:var(--ac);border-color:var(--ac);color:#fff}
-.tip-box{position:fixed;background:var(--sur3);border:1px solid var(--bdrh);border-radius:var(--rs);padding:9px 12px;font-size:11px;color:var(--tx);line-height:1.55;width:220px;z-index:9999;pointer-events:none;opacity:0;transition:opacity .15s;white-space:normal;font-style:normal;font-family:'DM Mono',monospace;box-shadow:0 4px 16px rgba(0,0,0,.3)}
-.tip-icon:hover + .tip-box, .tip-wrap:hover .tip-box{opacity:1}
+.tip-box{position:fixed;background:var(--sur3);border:1px solid var(--bdrh);border-radius:var(--rs);padding:8px 11px;font-size:11px;color:var(--tx);line-height:1.5;width:200px;z-index:9999;pointer-events:none;opacity:0;transition:opacity .12s;white-space:normal;font-family:'DM Mono',monospace;box-shadow:0 8px 24px rgba(0,0,0,.4);top:0;left:0}
+.tip-icon:hover~.tip-box,.tip-wrap:hover .tip-box{opacity:1}
 
-/* ── Desktop layout ── */
-@media(min-width:1000px){
-  main.desk-grid{
+/* ── Layout ── */
+main{margin:0 auto;display:flex;flex-direction:column;gap:10px;padding:10px 16px 40px;width:100%}
+.card{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:16px}
+.ct{font-family:'Syne',sans-serif;font-size:9px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--mu);margin-bottom:10px}
+
+/* ── Desktop: true dashboard grid, fits 1080p at 100% ── */
+@media(min-width:960px){
+  body{overflow:hidden}
+  #app{height:100vh;display:flex;flex-direction:column}
+  header{flex-shrink:0}
+  main{
+    flex:1;
+    overflow-y:auto;
+    overflow-x:hidden;
     display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:12px;
+    grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,1fr);
+    grid-template-rows:auto auto auto auto;
+    gap:8px;
+    padding:8px 12px 12px;
     align-items:start;
-    max-width:1400px;
-    padding:12px 24px 40px;
+    max-width:none;
   }
-  .desk-full  { grid-column:1/-1; }
-  .desk-left  { grid-column:1; }
-  .desk-mid   { grid-column:2; }
-  .desk-right { grid-column:3; }
-  .desk-span2 { grid-column:span 2; }
-  main.desk-grid .card{ padding:12px 14px; }
-  main.desk-grid .ct{ font-size:9px;margin-bottom:8px; }
-  main.desk-grid .fg{ margin-bottom:7px; }
-  main.desk-grid .fi{ padding:7px 10px;font-size:13px; }
-  main.desk-grid .btn{ padding:8px 14px;font-size:12px; }
-  main.desk-grid .sv{ font-size:18px; }
-  main.desk-grid .awamt{ font-size:24px; }
-  main.desk-grid .awr{ font-size:11px; }
-  main.desk-grid .sub-item{ padding:7px 8px; }
-  main.desk-grid .txn{ padding:7px 8px; }
-  main.desk-grid .tds{ font-size:12px; }
-  main.desk-grid .tam{ font-size:12px; }
-  main.desk-grid .af{ padding:10px;gap:6px; }
-  main.desk-grid .og{ gap:8px; }
-  main.desk-grid .sb{ padding:10px; }
-  main.desk-grid .sl{ font-size:9px; }
-  main.desk-grid .ss{ font-size:9px; }
-  main.desk-grid p{ font-size:11px; }
+  /* Row 1: overview spans all 3 cols */
+  .d-overview  { grid-column:1/-1; grid-row:1; }
+  /* Row 2+: left col = transactions (spans rows 2-4) */
+  .d-txn       { grid-column:1; grid-row:2/5; }
+  /* Row 2: middle = savings, right = coast settings */
+  .d-savings   { grid-column:2; grid-row:2; }
+  .d-coast     { grid-column:3; grid-row:2; }
+  /* Row 3: middle = allowance, right = subs */
+  .d-allow     { grid-column:2; grid-row:3; }
+  .d-subs      { grid-column:3; grid-row:3; }
+  /* Row 4: middle+right = log, data side by side */
+  .d-log       { grid-column:2; grid-row:4; }
+  .d-data      { grid-column:3; grid-row:4; }
+  /* Remove full/span classes on desktop */
+  .desk-full,.desk-span2,.desk-left,.desk-mid,.desk-right{ grid-column:unset; }
+  /* Compact everything */
+  main .card{ padding:10px 12px; }
+  main .ct{ margin-bottom:7px; font-size:9px; }
+  main .fg{ margin-bottom:6px; }
+  main .fi{ padding:6px 9px; font-size:12px; }
+  main .btn{ padding:7px 12px; font-size:12px; }
+  main .sv{ font-size:17px; }
+  main .ss{ font-size:9px; }
+  main .sl{ font-size:9px; }
+  main .sb{ padding:8px 10px; }
+  main .og{ gap:6px; }
+  main .rbw{ margin-top:8px; }
+  main .aw{ padding:10px; margin-top:2px; }
+  main .awamt{ font-size:22px; }
+  main .awr{ font-size:11px; }
+  main .ro-stat{ padding:8px; }
+  main .ro-stat-val{ font-size:15px; }
+  main .ro-grid{ gap:6px; }
+  main .ro-card{ padding:10px; margin-top:8px; }
+  main .aw-tabs{ margin-bottom:8px; }
+  main .sub-item{ padding:6px 8px; }
+  main .sub-add{ gap:5px; margin-top:7px; }
+  main .txn{ padding:6px 8px; }
+  main .tds{ font-size:12px; }
+  main .tam{ font-size:12px; }
+  main .af{ padding:8px; gap:5px; margin-bottom:7px; }
+  main .th{ margin-bottom:8px; }
+  main .log-hdr{ padding:6px 10px; }
+  main p{ font-size:11px; }
+  main .awrows{ gap:3px; margin-top:6px; }
+  main .emp{ padding:14px; }
+  /* Transactions card: make list scrollable so it doesn't stretch to infinity */
+  .d-txn{ display:flex; flex-direction:column; overflow:hidden; }
+  .d-txn .tl{ overflow-y:auto; flex:1; max-height:280px; }
+  /* Log card scrollable too */
+  .d-log{ overflow:hidden; }
+  .d-log #logbody{ max-height:180px; overflow-y:auto; }
 }
-@media(min-width:700px) and (max-width:999px){
-  main.desk-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:12px;
-    align-items:start;
-  }
-  .desk-full,.desk-span2{ grid-column:1/-1; }
-  .desk-left{ grid-column:1; }
-  .desk-right,.desk-mid{ grid-column:2; }
+@media(min-width:600px) and (max-width:959px){
+  main{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .d-overview,.d-txn,.d-log,.d-data{grid-column:1/-1}
+  .d-savings,.d-allow{grid-column:1}
+  .d-coast,.d-subs{grid-column:2}
 }
-@media(max-width:699px){
-  main.desk-grid{ display:flex;flex-direction:column;gap:14px; }
+@media(max-width:599px){
+  main{display:flex;flex-direction:column;gap:12px}
 }
 #lw{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:100}
 #lw::before{content:'';position:absolute;width:700px;height:700px;background:radial-gradient(circle,rgba(124,106,255,.07) 0%,transparent 65%);top:50%;left:50%;transform:translate(-50%,-55%);pointer-events:none}
@@ -117,9 +153,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(10,10,15,.92);backdrop-f
 .hbtn{background:none;border:1px solid var(--bdr);border-radius:var(--rs);color:var(--mu);font-family:'DM Mono',monospace;font-size:11px;padding:4px 9px;cursor:pointer;transition:all .18s;white-space:nowrap}
 .hbtn:hover{border-color:var(--ac);color:var(--ac)}
 #obtn:hover{border-color:var(--re)!important;color:var(--re)!important}
-main{max-width:1400px;margin:0 auto;padding:14px 20px 60px;display:flex;flex-direction:column;gap:14px}
-.card{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:18px}
-.ct{font-family:'Syne',sans-serif;font-size:10px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--mu);margin-bottom:14px}
+/* main, .card, .ct defined in grid section above */
 #serr{display:none;background:var(--red);border:1px solid rgba(248,113,113,.35);border-radius:var(--rs);padding:14px 16px;font-size:12px;color:var(--re);line-height:1.7;word-break:break-word}
 .al{border-radius:var(--rs);padding:11px 14px;font-size:12px;line-height:1.5;display:none;align-items:flex-start;gap:7px}
 .al.on{display:flex}
@@ -254,7 +288,7 @@ select.fi{cursor:pointer}
   <main class="desk-grid">
     <div id="serr" class="desk-full"></div>
     <div class="al desk-full" id="alrt"></div>
-    <div class="card desk-full">
+    <div class="card d-overview">
       <div class="ct">Overview</div>
       <div class="og">
         <div class="sb">
@@ -282,7 +316,7 @@ select.fi{cursor:pointer}
         </div>
       </div>
     </div>
-    <div class="card desk-full">
+    <div class="card d-txn">
       <div class="th">
         <div class="ct" style="margin:0">Transactions</div>
         <div class="flt">
@@ -311,13 +345,13 @@ select.fi{cursor:pointer}
       <div class="emp" id="txnemp">No transactions yet.</div>
       <div class="tl" id="txnlist"></div>
     </div>
-    <div class="card desk-left">
+    <div class="card d-savings">
         <div class="ct tip-wrap">Savings Balance <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">Your total liquid savings across all accounts. Transactions auto-adjust this, or update it manually anytime.</span></span></div>
         <div class="fg"><div class="fl">Current Total Savings ($)</div><input class="fi" type="number" id="isav" placeholder="0.00" step="0.01"></div>
         <button class="btn bp" id="bsav">Update Balance</button>
         <p style="margin-top:10px;font-size:11px;color:var(--dim);line-height:1.6">Adding transactions auto-adjusts this.</p>
     </div>
-    <div class="card desk-span2">
+    <div class="card d-allow">
       <div class="ct tip-wrap">Daily Allowance <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">How much you can spend per day and still have your floor intact by your coast date. Rollover mode carries unspent amounts forward to the next day.</span></span></div>
       <div class="aw-tabs">
         <button class="awt" id="awt-std">Standard</button>
@@ -341,13 +375,13 @@ select.fi{cursor:pointer}
         <div style="margin-top:10px;font-size:11px;color:var(--dim);line-height:1.6">Unspent daily allowance carries forward to tomorrow.</div>
       </div>
     </div>
-    <div class="card desk-left">
+    <div class="card d-coast">
         <div class="ct tip-wrap">Coast Settings <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">Set your floor (minimum you never touch) and coast-until date. These drive your daily allowance.</span></span></div>
         <div class="fg"><div class="fl tip-wrap">Floor <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">The minimum savings balance you won&#39;t spend below. Acts as your emergency cushion.</span></span></div><input class="fi" type="number" id="iflr" placeholder="e.g. 5000" step="100"></div>
         <div class="fg"><div class="fl tip-wrap">Coasting Until <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">The date you plan to start earning again. Your daily allowance is calculated to get you to this date with your floor intact.</span></span></div><input class="fi" type="date" id="idat"></div>
         <button class="btn bg" id="bgoal">Save Settings</button>
       </div>
-    <div class="card desk-mid">
+    <div class="card d-subs">
       <div class="ct tip-wrap">Subscriptions <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">Track recurring charges. Yearly and weekly amounts are normalized to monthly for the total. These don&#39;t auto-deduct — log them as transactions to keep your balance accurate.</span></span></div>
       <div class="sub-list" id="sub-list"></div>
       <div class="sub-total" id="sub-total" style="display:none">
@@ -366,12 +400,12 @@ select.fi{cursor:pointer}
         <button class="btn bp s2" id="badd-sub">+ Add</button>
       </div>
     </div>
-    <div class="card desk-full">
+    <div class="card d-log">
       <div class="ct tip-wrap">Monthly Log <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">A collapsible month-by-month breakdown of all transactions. Shows income, expenses, and net for each month. Click a month to expand it.</span></span></div>
       <div id="logbody"><div class="emp" style="padding:16px">No transactions yet.</div></div>
     </div>
     <!-- IMPORT / EXPORT -->
-    <div class="card desk-right">
+    <div class="card d-data">
       <div class="ct">Data</div>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
         <button class="btn bg" id="btn-export" style="width:auto;flex:1">⬇ Export JSON</button>
@@ -953,17 +987,27 @@ ge('thbtn').addEventListener('click',function(){
 });
 initTheme();
 
-// ── Tooltip positioning (fixed so never clips) ──
+// ── Tooltip positioning — never clips any edge ──
 document.addEventListener('mouseover', function(e){
   var icon = e.target.closest('.tip-icon');
   if (!icon) return;
-  var box = icon.nextElementSibling;
-  if (!box || !box.classList.contains('tip-box')) return;
-  var r = icon.getBoundingClientRect();
-  // Position above the icon, centered
-  box.style.left = Math.min(Math.max(r.left + r.width/2 - 110, 8), window.innerWidth - 228) + 'px';
-  box.style.top  = (r.top - 8) + 'px';
-  box.style.transform = 'translateY(-100%)';
+  // Find .tip-box as sibling anywhere in .tip-wrap parent
+  var wrap = icon.closest('.tip-wrap');
+  if (!wrap) return;
+  var box = wrap.querySelector('.tip-box');
+  if (!box) return;
+  var r   = icon.getBoundingClientRect();
+  var bw  = 200, bh = 120, margin = 8;
+  var vw  = window.innerWidth, vh = window.innerHeight;
+  // Horizontal: center on icon, clamp to viewport
+  var left = r.left + r.width/2 - bw/2;
+  left = Math.max(margin, Math.min(left, vw - bw - margin));
+  // Vertical: prefer above, fallback below
+  var top = r.top - bh - 8;
+  if (top < margin) top = r.bottom + 8;
+  box.style.left = left + 'px';
+  box.style.top  = top  + 'px';
+  box.style.transform = 'none';
 });
 
 // ── Export ────────────────────────────────────────
