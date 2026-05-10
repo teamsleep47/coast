@@ -214,10 +214,11 @@ select.fi{cursor:pointer}
   .d-coast   { grid-column:3; grid-row:2; }
   .d-allow   { grid-column:2; grid-row:3; }
   .d-subs    { grid-column:3; grid-row:3; }
-  .d-log     { grid-column:2; grid-row:4; }
-  .d-data    { grid-column:3; grid-row:4; }
+  .d-log     { grid-column:2/4; grid-row:4; overflow:hidden; }
+  .d-data    { grid-column:2/4; grid-row:5; }
   .d-txn .tl { overflow-y:auto; flex:1; }
-  .d-log #logbody{ max-height:130px; overflow-y:auto; }
+  /* Log: collapsed shows just month headers, expanded scrolls inside */
+  .d-log #logbody{ max-height:200px; overflow-y:auto; }
   main .card { padding:8px 10px; }
   main .ct   { margin-bottom:6px; font-size:8px; }
   main .fg   { margin-bottom:6px; }
