@@ -30,6 +30,28 @@
 [data-theme="light"] #lw{ background:var(--bg); }
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--tx);font-family:'DM Mono',monospace;font-size:14px;min-height:100vh;overflow-x:hidden}
+
+/* ── Tooltip ── */
+.tip-wrap{position:relative;display:inline-flex;align-items:center;gap:5px}
+.tip-icon{width:14px;height:14px;border-radius:50%;background:var(--sur3);border:1px solid var(--bdrh);color:var(--mu);font-size:9px;display:inline-flex;align-items:center;justify-content:center;cursor:help;flex-shrink:0;font-family:serif;font-style:italic;user-select:none}
+.tip-icon:hover{background:var(--ac);border-color:var(--ac);color:#fff}
+.tip-box{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--sur3);border:1px solid var(--bdrh);border-radius:var(--rs);padding:9px 12px;font-size:11px;color:var(--tx);line-height:1.55;width:220px;z-index:999;pointer-events:none;opacity:0;transition:opacity .15s;white-space:normal;font-style:normal;font-family:'DM Mono',monospace}
+.tip-box::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--bdrh)}
+.tip-icon:hover + .tip-box, .tip-wrap:hover .tip-box{opacity:1}
+
+/* ── Desktop 2-col grid layout ── */
+@media(min-width:700px){
+  .desk-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+  .desk-full{grid-column:1/-1}
+  .desk-left{grid-column:1}
+  .desk-right{grid-column:2}
+}
+@media(max-width:699px){
+  /* Mobile order via order property */
+  main{display:flex;flex-direction:column}
+  .mob-1{order:1}.mob-2{order:2}.mob-3{order:3}.mob-4{order:4}
+  .mob-5{order:5}.mob-6{order:6}.mob-7{order:7}.mob-8{order:8}
+}
 #lw{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:100}
 #lw::before{content:'';position:absolute;width:700px;height:700px;background:radial-gradient(circle,rgba(124,106,255,.07) 0%,transparent 65%);top:50%;left:50%;transform:translate(-50%,-55%);pointer-events:none}
 .lc{position:relative;background:var(--sur);border:1px solid var(--bdr);border-radius:20px;padding:44px 36px;width:min(400px,92vw);display:flex;flex-direction:column;gap:20px;text-align:center}
@@ -195,41 +217,51 @@ select.fi{cursor:pointer}
       <button class="hbtn" id="obtn">sign out</button>
     </div>
   </header>
-  <main>
-    <div id="serr"></div>
-    <div class="al" id="alrt"></div>
-    <div class="card">
+  <main class="desk-grid">
+    <div id="serr" class="desk-full"></div>
+    <div class="al desk-full" id="alrt"></div>
+    <div class="card desk-full mob-1">
       <div class="ct">Overview</div>
       <div class="og">
-        <div class="sb"><div class="sl">Savings</div><div class="sv g" id="ss">$0</div><div class="ss">balance</div></div>
-        <div class="sb"><div class="sl">Spent (30d)</div><div class="sv r" id="sp30">$0</div><div class="ss">last 30 days</div></div>
-        <div class="sb"><div class="sl">Daily Burn</div><div class="sv a" id="sdb">$0</div><div class="ss">avg/day</div></div>
-        <div class="sb"><div class="sl">Runway</div><div class="sv p" id="srw">—</div><div class="ss" id="srws">at current burn</div></div>
+        <div class="sb">
+          <div class="sl tip-wrap">Savings <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">Your total liquid savings balance. Updated manually or auto-adjusted when you log transactions.</span></span></div>
+          <div class="sv g" id="ss">$0</div><div class="ss">current balance</div>
+        </div>
+        <div class="sb">
+          <div class="sl tip-wrap">Spent (30d) <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">Total expenses logged in the last 30 days.</span></span></div>
+          <div class="sv r" id="sp30">$0</div><div class="ss">last 30 days</div>
+        </div>
+        <div class="sb">
+          <div class="sl tip-wrap">Daily Burn <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">Your average daily spending over the last 30 days. Used to calculate your runway.</span></span></div>
+          <div class="sv a" id="sdb">$0</div><div class="ss">avg/day</div>
+        </div>
+        <div class="sb">
+          <div class="sl tip-wrap">Runway <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">How many days your savings (above your floor) will last at your current daily burn rate. You can&#39;t edit it directly — it updates automatically as you log spending.</span></span></div>
+          <div class="sv p" id="srw">—</div><div class="ss" id="srws">at current burn</div>
+        </div>
       </div>
       <div id="rbsec" style="display:none">
         <div class="rbw">
-          <div class="rbl"><span>Floor Buffer</span><span id="rbpct">0%</span></div>
+          <div class="rbl"><span class="tip-wrap">Floor Buffer <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">How much of your savings sits above your floor. When this hits 0, you&#39;ve reached your minimum.</span></span></span><span id="rbpct">0%</span></div>
           <div class="rb"><div class="rbf" id="rbf" style="width:0%"></div></div>
           <div class="rbs"><span id="rbfl">floor: $0</span><span id="rbb">balance: $0</span></div>
         </div>
       </div>
     </div>
-    <div class="two">
-      <div class="card">
-        <div class="ct">Savings Balance</div>
+    <div class="card desk-left mob-4">
+        <div class="ct tip-wrap">Savings Balance <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">Your total liquid savings across all accounts. Transactions auto-adjust this, or update it manually anytime.</span></span></div>
         <div class="fg"><div class="fl">Current Total Savings ($)</div><input class="fi" type="number" id="isav" placeholder="0.00" step="0.01"></div>
         <button class="btn bp" id="bsav">Update Balance</button>
         <p style="margin-top:10px;font-size:11px;color:var(--dim);line-height:1.6">Adding transactions auto-adjusts this.</p>
-      </div>
-      <div class="card">
-        <div class="ct">Coast Settings</div>
-        <div class="fg"><div class="fl">Floor — Never Go Below ($)</div><input class="fi" type="number" id="iflr" placeholder="e.g. 5000" step="100"></div>
-        <div class="fg"><div class="fl">Coasting Until</div><input class="fi" type="date" id="idat"></div>
+    </div>
+    <div class="card desk-right mob-5">
+        <div class="ct tip-wrap">Coast Settings <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">Set your floor (minimum you never touch) and coast-until date. These drive your daily allowance.</span></span></div>
+        <div class="fg"><div class="fl tip-wrap">Floor <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">The minimum savings balance you won&#39;t spend below. Acts as your emergency cushion.</span></span></div><input class="fi" type="number" id="iflr" placeholder="e.g. 5000" step="100"></div>
+        <div class="fg"><div class="fl tip-wrap">Coasting Until <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">The date you plan to start earning again. Your daily allowance is calculated to get you to this date with your floor intact.</span></span></div><input class="fi" type="date" id="idat"></div>
         <button class="btn bg" id="bgoal">Save Settings</button>
       </div>
-    </div>
-    <div class="card">
-      <div class="ct">Daily Allowance</div>
+    <div class="card desk-left mob-3">
+      <div class="ct tip-wrap">Daily Allowance <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">How much you can spend per day and still have your floor intact by your coast date. Rollover mode carries unspent amounts forward to the next day.</span></span></div>
       <div class="aw-tabs">
         <button class="awt" id="awt-std">Standard</button>
         <button class="awt on" id="awt-ro">With Rollover</button>
@@ -252,8 +284,8 @@ select.fi{cursor:pointer}
         <div style="margin-top:10px;font-size:11px;color:var(--dim);line-height:1.6">Unspent daily allowance carries forward to tomorrow.</div>
       </div>
     </div>
-    <div class="card">
-      <div class="ct">Subscriptions</div>
+    <div class="card desk-right mob-6">
+      <div class="ct tip-wrap">Subscriptions <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">Track recurring charges. Yearly and weekly amounts are normalized to monthly for the total. These don&#39;t auto-deduct — log them as transactions to keep your balance accurate.</span></span></div>
       <div class="sub-list" id="sub-list"></div>
       <div class="sub-total" id="sub-total" style="display:none">
         <span>Monthly total</span><span class="sub-total-amt" id="sub-total-amt">$0</span>
@@ -271,7 +303,7 @@ select.fi{cursor:pointer}
         <button class="btn bp s2" id="badd-sub">+ Add</button>
       </div>
     </div>
-    <div class="card">
+    <div class="card desk-full mob-2">
       <div class="th">
         <div class="ct" style="margin:0">Transactions</div>
         <div class="flt">
@@ -300,13 +332,13 @@ select.fi{cursor:pointer}
       <div class="emp" id="txnemp">No transactions yet.</div>
       <div class="tl" id="txnlist"></div>
     </div>
-    <div class="card">
-      <div class="ct">Monthly Log</div>
+    <div class="card desk-full mob-7">
+      <div class="ct tip-wrap">Monthly Log <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box">A collapsible month-by-month breakdown of all transactions. Shows income, expenses, and net for each month. Click a month to expand it.</span></span></div>
       <div id="logbody"><div class="emp" style="padding:16px">No transactions yet.</div></div>
     </div>
 
     <!-- IMPORT / EXPORT -->
-    <div class="card">
+    <div class="card desk-full mob-8">
       <div class="ct">Data</div>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
         <button class="btn bg" id="btn-export" style="width:auto;flex:1">⬇ Export JSON</button>
@@ -338,7 +370,10 @@ var S = { savings:0, floor:0, date:'', txns:[], subs:[], rollover_bank:0, last_a
 function ge(id){ return document.getElementById(id); }
 function money(n){ return '$'+Math.abs(Number(n)||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function today(){ return new Date().toLocaleDateString('en-CA'); } // YYYY-MM-DD in local time
+function today(){
+  // Always use Eastern Time for rollover consistency
+  return new Date().toLocaleDateString('en-CA',{timeZone:'America/New_York'});
+}
 
 // ── Pill ──────────────────────────────────────────
 function hpill(cls,txt){ ge('hpill').className=cls||''; ge('hptxt').textContent=txt||''; }
