@@ -193,32 +193,56 @@ select.fi{cursor:pointer}
 
 /* ── Desktop dashboard grid ── */
 @media(min-width:960px){
-  html{ font-size:75%; }
+  html{ font-size:62%; }
+  body{ overflow:hidden; }
+  #app{ height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+  header{ flex-shrink:0; height:44px; padding:0 14px; }
+  .brand{ font-size:15px; }
   main{
     flex:1;
-    overflow-y:auto;
-    overflow-x:hidden;
+    overflow:hidden;
     display:grid;
-    grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr);
-    grid-auto-rows:min-content;
-    gap:8px;
-    padding:8px 12px 12px;
+    grid-template-columns:minmax(0,1.15fr) minmax(0,1fr) minmax(0,1fr);
+    grid-template-rows:auto auto auto auto auto;
+    gap:5px;
+    padding:5px 8px 8px;
     align-content:start;
   }
-  .d-overview{ grid-column:1/-1; }
-  .d-txn     { grid-column:1; grid-row:2/6; display:flex; flex-direction:column; }
-  .d-savings { grid-column:2; }
-  .d-coast   { grid-column:3; }
-  .d-allow   { grid-column:2; }
-  .d-subs    { grid-column:3; }
-  .d-log     { grid-column:2; }
-  .d-data    { grid-column:3; }
-  .d-txn .tl { overflow-y:auto; flex:1; max-height:none; min-height:60px; }
-  .d-log #logbody{ max-height:160px; overflow-y:auto; }
-  /* Compact card internals */
-  main .card { padding:12px 14px; }
-  main .ct   { margin-bottom:8px; }
-  main .fg   { margin-bottom:8px; }
+  .d-overview{ grid-column:1/-1; grid-row:1; }
+  .d-txn     { grid-column:1; grid-row:2/6; display:flex; flex-direction:column; overflow:hidden; }
+  .d-savings { grid-column:2; grid-row:2; }
+  .d-coast   { grid-column:3; grid-row:2; }
+  .d-allow   { grid-column:2; grid-row:3; }
+  .d-subs    { grid-column:3; grid-row:3; }
+  .d-log     { grid-column:2; grid-row:4; }
+  .d-data    { grid-column:3; grid-row:4; }
+  .d-txn .tl { overflow-y:auto; flex:1; }
+  .d-log #logbody{ max-height:130px; overflow-y:auto; }
+  main .card { padding:8px 10px; }
+  main .ct   { margin-bottom:6px; font-size:8px; }
+  main .fg   { margin-bottom:6px; }
+  main .fi   { padding:6px 8px; }
+  main .btn  { padding:6px 10px; }
+  main .sb   { padding:8px 10px; }
+  main .og   { gap:5px; }
+  main .sv   { font-size:18px; }
+  main .awamt{ font-size:20px; }
+  main .ro-stat-val{ font-size:14px; }
+  main .ro-stat{ padding:7px 8px; }
+  main .ro-grid{ gap:5px; }
+  main .ro-card{ padding:8px 10px; margin-top:6px; }
+  main .aw   { padding:9px 11px; }
+  main .aw-tabs{ margin-bottom:6px; }
+  main .awrows{ gap:2px; margin-top:5px; }
+  main .txn  { padding:5px 7px; }
+  main .af   { padding:7px 9px; gap:5px; margin-bottom:6px; }
+  main .th   { margin-bottom:6px; }
+  main .sub-item{ padding:5px 7px; }
+  main .sub-add{ margin-top:6px; gap:5px; }
+  main .log-hdr{ padding:5px 8px; }
+  main .rbw  { margin-top:6px; }
+  main .emp  { padding:12px; }
+  main p     { font-size:10px; line-height:1.4; }
 }
 @media(min-width:600px) and (max-width:959px){
   main{display:grid;grid-template-columns:1fr 1fr;gap:10px}
