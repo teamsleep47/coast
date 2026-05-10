@@ -193,6 +193,7 @@ select.fi{cursor:pointer}
 
 /* ── Desktop dashboard grid ── */
 @media(min-width:960px){
+  html{ font-size:75%; }
   main{
     flex:1;
     overflow-y:auto;
@@ -229,8 +230,10 @@ select.fi{cursor:pointer}
   main{display:flex;flex-direction:column;gap:12px}
 }
 
-/* ── Mobile main layout ── */
-main{display:flex;flex-direction:column;gap:10px;padding:10px 14px 40px;width:100%}
+/* ── Mobile main layout (only applies below 600px) ── */
+@media(max-width:599px){
+  main{display:flex;flex-direction:column;gap:10px;padding:10px 14px 40px;width:100%}
+}
 
 /* ── Scrollbar ── */
 ::-webkit-scrollbar{width:3px;height:3px}
