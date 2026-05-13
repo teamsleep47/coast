@@ -417,11 +417,26 @@ select.fi{cursor:pointer}
         <div class="ro-card-title">Rollover Breakdown</div>
         <div class="ro-grid">
           <div class="ro-stat"><div class="ro-stat-lbl">Base Allowance</div><div class="ro-stat-val neu" id="ro-base">—</div></div>
-          <div class="ro-stat"><div class="ro-stat-lbl">Rolled Over</div><div class="ro-stat-val pos" id="ro-rolled">—</div></div>
+          <div class="ro-stat">
+            <div class="ro-stat-lbl" style="display:flex;align-items:center;justify-content:space-between">
+              Rollover Bank
+              <span style="font-size:9px;color:var(--ac);cursor:pointer" onclick="toggleRoEdit()">edit</span>
+            </div>
+            <div class="ro-stat-val pos" id="ro-rolled">—</div>
+            <div id="ro-edit-wrap" style="display:none;margin-top:5px">
+              <input class="fi" type="number" id="ro-edit-input" placeholder="0.00" step="0.01"
+                style="font-size:11px;padding:4px 7px"
+                onkeydown="if(event.key==='Enter')saveRoEdit();if(event.key==='Escape')toggleRoEdit()">
+              <div style="display:flex;gap:5px;margin-top:4px">
+                <button class="btn bp" style="padding:3px 10px;font-size:10px;width:auto" onclick="saveRoEdit()">Save</button>
+                <button class="btn bg" style="padding:3px 10px;font-size:10px;width:auto" onclick="toggleRoEdit()">Cancel</button>
+              </div>
+            </div>
+          </div>
           <div class="ro-stat"><div class="ro-stat-lbl">Spent Today</div><div class="ro-stat-val neg" id="ro-spent">—</div></div>
           <div class="ro-stat"><div class="ro-stat-lbl">Remaining Today</div><div class="ro-stat-val" id="ro-rem">—</div></div>
         </div>
-        <div style="margin-top:10px;font-size:11px;color:var(--dim);line-height:1.6">Unspent daily allowance carries forward to tomorrow.</div>
+        <div style="margin-top:8px;font-size:10px;color:var(--dim);line-height:1.5">Unspent daily allowance carries forward. Edit rollover to correct if needed.</div>
       </div>
     </div>
     <div class="card d-coast">
@@ -975,22 +990,52 @@ function startEdit(id){
   var t=S.txns.find(function(x){ return x.id===id; }); if(!t) return;
   var row=document.querySelector('.txn[data-id="'+id+'"]');
   row.classList.add('ed');
-  row.querySelector('.tds').innerHTML='<input class="ei" id="eid'+id+'" value="'+esc(t.desc)+'" onblur="commitEdit(\''+id+'\',true)" onkeydown="ekd(event,\''+id+'\')"> ';
-  row.querySelector('.tam').innerHTML='<input class="ei eia" id="eia'+id+'" value="'+t.amt+'" onblur="commitEdit(\''+id+'\',true)" onkeydown="ekd(event,\''+id+'\')"> ';
+  row.querySelector('.tds').innerHTML=
+    '<input class="ei" id="eid'+id+'" value="'+esc(t.desc)+'"'
+    +' onblur="scheduleCommit(\'' +id+ '\')" onkeydown="ekd(event,\'' +id+ '\')">';
+  row.querySelector('.tam').innerHTML=
+    '<input class="ei eia" id="eia'+id+'" value="'+t.amt+'"'
+    +' onblur="scheduleCommit(\'' +id+ '\')" onkeydown="ekd(event,\'' +id+ '\')">';
   var el=ge('eid'+id); if(el){ el.focus(); el.select(); }
 }
 
-function commitEdit(id, fromBlur){
+var commitTimer=null;
+function scheduleCommit(id){
+  clearTimeout(commitTimer);
+  commitTimer=setTimeout(function(){ commitEdit(id); },150);
+}
+
+function commitEdit(id){
+  clearTimeout(commitTimer);
   if(editId!==id) return; editId=null;
   var t=S.txns.find(function(x){ return x.id===id; }); if(!t) return;
   var de=ge('eid'+id), ae=ge('eia'+id);
   if(de&&de.value.trim()) t.desc=de.value.trim();
   if(ae){ var v=parseFloat(ae.value); if(!isNaN(v)&&v>0) t.amt=v; }
-  recomputeSavings(); // always correct, no manual arithmetic
+  recomputeSavings();
   renderAll(); qsave();
 }
-
 function ekd(e,id){ if(e.key==='Enter'){ e.preventDefault(); commitEdit(id); } if(e.key==='Escape'){ editId=null; renderTxns(); } }
+
+// ── Rollover edit ────────────────────────────────
+function toggleRoEdit(){
+  var wrap=ge('ro-edit-wrap'), inp=ge('ro-edit-input');
+  if(wrap.style.display==='none'){
+    wrap.style.display='block';
+    inp.value=Number(S.rollover_bank||0).toFixed(2);
+    inp.focus(); inp.select();
+  } else {
+    wrap.style.display='none';
+  }
+}
+function saveRoEdit(){
+  var v=parseFloat(ge('ro-edit-input').value);
+  if(!isNaN(v)&&v>=0){
+    S.rollover_bank=Math.round(v*100)/100;
+    ge('ro-edit-wrap').style.display='none';
+    renderAllowance(); qsave();
+  }
+}
 
 // ── Wire ──────────────────────────────────────────
 ge('sbtn').addEventListener('click',function(){
