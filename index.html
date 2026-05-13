@@ -990,23 +990,21 @@ function startEdit(id){
   var t=S.txns.find(function(x){ return x.id===id; }); if(!t) return;
   var row=document.querySelector('.txn[data-id="'+id+'"]');
   row.classList.add('ed');
+  // NO onblur — only Enter or outside-click saves. Prevents closing while typing amount.
   row.querySelector('.tds').innerHTML=
     '<input class="ei" id="eid'+id+'" value="'+esc(t.desc)+'"'
-    +' onblur="scheduleCommit(\'' +id+ '\')" onkeydown="ekd(event,\'' +id+ '\')">';
+    +' onkeydown="ekd(event,\''+id+'\')"> ';
   row.querySelector('.tam').innerHTML=
     '<input class="ei eia" id="eia'+id+'" value="'+t.amt+'"'
-    +' onblur="scheduleCommit(\'' +id+ '\')" onkeydown="ekd(event,\'' +id+ '\')">';
-  var el=ge('eid'+id); if(el){ el.focus(); el.select(); }
-}
-
-var commitTimer=null;
-function scheduleCommit(id){
-  clearTimeout(commitTimer);
-  commitTimer=setTimeout(function(){ commitEdit(id); },150);
+    +' onkeydown="ekd(event,\''+id+'\')"> ';
+  // Focus amount field directly so user can type amount right away
+  // Short delay so DOM has rendered
+  setTimeout(function(){
+    var el=ge('eia'+id); if(el){ el.focus(); el.select(); }
+  },10);
 }
 
 function commitEdit(id){
-  clearTimeout(commitTimer);
   if(editId!==id) return; editId=null;
   var t=S.txns.find(function(x){ return x.id===id; }); if(!t) return;
   var de=ge('eid'+id), ae=ge('eia'+id);
@@ -1015,8 +1013,17 @@ function commitEdit(id){
   recomputeSavings();
   renderAll(); qsave();
 }
-function ekd(e,id){ if(e.key==='Enter'){ e.preventDefault(); commitEdit(id); } if(e.key==='Escape'){ editId=null; renderTxns(); } }
-
+function ekd(e,id){
+  if(e.key==='Enter'){ e.preventDefault(); commitEdit(id); }
+  if(e.key==='Escape'){ editId=null; renderTxns(); }
+  if(e.key==='Tab'){
+    // Tab between desc and amount without committing
+    e.preventDefault();
+    var de=ge('eid'+id), ae=ge('eia'+id);
+    if(document.activeElement===de && ae){ ae.focus(); ae.select(); }
+    else if(document.activeElement===ae && de){ de.focus(); de.select(); }
+  }
+}
 // ── Rollover edit ────────────────────────────────
 function toggleRoEdit(){
   var wrap=ge('ro-edit-wrap'), inp=ge('ro-edit-input');
@@ -1072,9 +1079,12 @@ ge('samt').addEventListener('keydown',function(e){ if(e.key==='Enter') addSub();
 ge('awt-std').addEventListener('click',function(){ allowMode='std'; ge('awt-std').className='awt on'; ge('awt-ro').className='awt'; renderAllowance(); });
 ge('awt-ro').addEventListener('click',function(){ allowMode='rollover'; ge('awt-ro').className='awt on'; ge('awt-std').className='awt'; renderAllowance(); });
 document.addEventListener('click',function(e){
-  // Only commit edit if clicking outside a txn row AND not on a button/input
-  if(editId && !e.target.closest('.txn') && e.target.tagName!=='BUTTON' && e.target.tagName!=='INPUT'){
-    commitEdit(editId);
+  // Commit if clicking outside the editing txn row
+  if(editId){
+    var editRow = document.querySelector('.txn[data-id="'+editId+'"]');
+    if(editRow && !editRow.contains(e.target)){
+      commitEdit(editId);
+    }
   }
 });
 document.querySelectorAll('.fb').forEach(function(b){ b.addEventListener('click',function(){ txnFilter=b.dataset.f; document.querySelectorAll('.fb').forEach(function(x){ x.classList.remove('on'); }); b.classList.add('on'); renderTxns(); }); });
