@@ -845,21 +845,24 @@ function renderAllowance(){
       return;
     }
     var t=today();
-    // Accrue rollover: if last accrual was yesterday, carry unused amount
-    if(S.last_allowance_date && S.last_allowance_date!==t){
+    // Accrue rollover exactly ONCE per day — guard with last_allowance_date
+    // last_allowance_date stores the date we LAST accrued, not today
+    if(S.last_allowance_date !== t){
       var yest=new Date(); yest.setDate(yest.getDate()-1);
-      var yestStr=yest.toLocaleDateString('en-CA');
+      var yestStr=yest.toLocaleDateString('en-CA',{timeZone:'America/New_York'});
       if(S.last_allowance_date===yestStr){
-        // yesterday's unspent = base allowance - what was spent yesterday
+        // yesterday's unspent = yesterday's base allowance - what was actually spent
         var spentYest=S.txns.filter(function(x){ return x.type==='expense'&&x.date===yestStr; }).reduce(function(acc,x){ return acc+Number(x.amt); },0);
         var unused=Math.max(0,a.pd-spentYest);
-        S.rollover_bank=(Number(S.rollover_bank)||0)+unused;
-      } else if(S.last_allowance_date<yestStr){
-        // Gap of more than 1 day — reset rollover bank
+        S.rollover_bank=Math.round(((Number(S.rollover_bank)||0)+unused)*100)/100;
+      } else if(S.last_allowance_date && S.last_allowance_date<yestStr){
+        // Gap > 1 day — user didn't open app, reset bank
         S.rollover_bank=0;
       }
+      // Mark today as accrued and save immediately so this never runs twice
+      S.last_allowance_date=t;
+      qsave();
     }
-    S.last_allowance_date=t;
     var bank=Number(S.rollover_bank)||0;
     var spentToday=S.txns.filter(function(x){ return x.type==='expense'&&x.date===t; }).reduce(function(acc,x){ return acc+Number(x.amt); },0);
     var adj=a.pd+bank;
